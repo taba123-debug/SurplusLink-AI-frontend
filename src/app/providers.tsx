@@ -1,0 +1,39 @@
+import React, { useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'sonner';
+
+interface ProvidersProps {
+  children: React.ReactNode;
+}
+
+export function Providers({ children }: ProvidersProps) {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 1000 * 60, // 1 minute
+            refetchOnWindowFocus: false,
+            retry: 1,
+          },
+        },
+      })
+  );
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <Toaster
+        position="top-right"
+        richColors
+        closeButton
+        toastOptions={{
+          style: {
+            borderRadius: '12px',
+            fontFamily: 'Inter, sans-serif',
+          },
+        }}
+      />
+    </QueryClientProvider>
+  );
+}
