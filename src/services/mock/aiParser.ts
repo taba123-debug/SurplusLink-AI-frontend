@@ -178,7 +178,7 @@ export function extractSellerLotDescription(text: string): LotExtraction {
     asking_unit_price_minor: asking_unit_price ? toMinorUnits(asking_unit_price) : null,
     reserve_unit_price_minor: reserve_unit_price ? toMinorUnits(reserve_unit_price) : null,
     min_purchase_quantity: Math.min(25, Math.round(total_quantity * 0.15)),
-    packagingType: 'Airtight food-grade sealed master packaging',
+    packaging_type: 'Airtight food-grade sealed master packaging',
     expiry_days_from_now: expiry_days,
     storage_requirements: 'Dry ambient storage (18°C–24°C), protected from humidity',
     city,

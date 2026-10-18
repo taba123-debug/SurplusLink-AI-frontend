@@ -14,6 +14,14 @@ import {
   Info,
 } from 'lucide-react';
 
+interface NavItem {
+  name: string;
+  path: string;
+  icon: any;
+  badge?: string;
+  highlight?: boolean;
+}
+
 interface SidebarProps {
   collapsed?: boolean;
   onToggleCollapse?: () => void;
@@ -22,7 +30,7 @@ interface SidebarProps {
 export function Sidebar({ collapsed }: SidebarProps) {
   const { currentRole, currentOrg } = useDemoStore();
 
-  const buyerNav = [
+  const buyerNav: NavItem[] = [
     { name: 'Buyer Dashboard', path: '/buyer/dashboard', icon: LayoutDashboard },
     { name: 'AI Sourcing', path: '/buyer/ai-sourcing', icon: Sparkles, badge: 'AI' },
     { name: 'Saved Requirements', path: '/buyer/requirements', icon: BookmarkCheck },
@@ -31,7 +39,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
     { name: 'Deals & Pickup', path: '/buyer/deals', icon: FileCheck2 },
   ];
 
-  const sellerNav = [
+  const sellerNav: NavItem[] = [
     { name: 'Seller Dashboard', path: '/seller/dashboard', icon: LayoutDashboard },
     { name: 'Surplus Inventory', path: '/seller/inventory', icon: Boxes },
     { name: 'List New Surplus', path: '/seller/inventory/new', icon: PackagePlus, highlight: true },
@@ -40,7 +48,7 @@ export function Sidebar({ collapsed }: SidebarProps) {
     { name: 'Analytics & Reporting', path: '/seller/analytics', icon: LineChart },
   ];
 
-  const adminNav = [
+  const adminNav: NavItem[] = [
     { name: 'Platform Overview', path: '/admin/overview', icon: LayoutDashboard },
     { name: 'All Wholesale Lots', path: '/marketplace', icon: PackageSearch },
     { name: 'All Offers', path: '/seller/offers', icon: HandCoins },
