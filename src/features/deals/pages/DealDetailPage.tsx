@@ -45,12 +45,10 @@ export function DealDetailPage() {
     mutationFn: (outcome: 'SUCCESS' | 'FAILURE') =>
       api.simulatePayment(deal!.id, outcome),
     onSuccess: (updatedDeal) => {
-      queryClient.invalidateQueries({ queryKey: ['deal', id] });
-      queryClient.invalidateQueries({ queryKey: ['deals'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries();
       if (updatedDeal.paymentStatus === 'SIMULATED_PAID') {
         toast.success('Simulated payment confirmed!', {
-          description: 'Private warehouse pickup location and release code have unlocked.',
+          description: 'Authorized pickup information is available.',
         });
       } else {
         toast.error('Simulated payment was declined.');
@@ -65,9 +63,7 @@ export function DealDetailPage() {
   const pickupMutation = useMutation({
     mutationFn: () => api.confirmPickup(deal!.id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['deal', id] });
-      queryClient.invalidateQueries({ queryKey: ['deals'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries();
       toast.success('Inventory handover confirmed! Deal completed & settled.');
     },
     onError: (err: Error) => {
@@ -130,6 +126,7 @@ export function DealDetailPage() {
           <h1 className="text-2xl font-extrabold text-[#17251F]">
             {deal.lotTitle}
           </h1>
+          <p className="text-xs text-[#64736B]" role="status">Payment: {deal.paymentStatus.replaceAll('_', ' ')} · Pickup: {deal.pickupStatus.replaceAll('_', ' ')}</p>
 
           <div className="flex flex-wrap items-center gap-4 text-xs text-[#64736B]">
             <span className="flex items-center gap-1 font-semibold text-[#17251F]">
@@ -165,7 +162,7 @@ export function DealDetailPage() {
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-8">
           {/* Simulated Checkout Box if Awaiting Payment */}
-          {!isPaid && !isCompleted && (
+          {isBuyer && deal.status === 'AWAITING_PAYMENT' && (
             <div className="rounded-2xl border-2 border-[#E8A84B]/60 bg-[#FEF8EC]/40 p-6 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-bold text-[#B27318]">
@@ -178,10 +175,10 @@ export function DealDetailPage() {
               </div>
 
               <p className="text-xs text-[#17251F]/90 leading-relaxed">
-                To test the confidential handover workflow, simulate a successful escrow deposit. This will lock the platform transaction and reveal the seller's confidential warehouse loading dock and release code.
+                To test the confidential handover workflow, simulate a successful escrow deposit. This will lock the platform transaction and reveal pickup information authorized by the backend.
               </p>
 
-              <div className="p-4 bg-white rounded-xl border border-[#E3EAE5] flex items-center justify-between">
+              <div className="p-4 bg-white rounded-xl border border-[#E3EAE5] flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
                 <div>
                   <div className="text-xs text-[#64736B]">Total Demo Payable:</div>
                   <div className="text-2xl font-extrabold text-[#17251F]">
@@ -206,6 +203,7 @@ export function DealDetailPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => paymentMutation.mutate('FAILURE')}
+                    disabled={paymentMutation.isPending}
                     className="text-xs text-[#C44E4E]"
                   >
                     Simulate Failure
@@ -216,7 +214,7 @@ export function DealDetailPage() {
           )}
 
           {/* Handover Collection CTA if Paid and Awaiting Pickup */}
-          {isPaid && !isCompleted && (
+          {!isBuyer && isPaid && !isCompleted && (
             <div className="rounded-2xl border border-[#176B4D]/30 bg-[#EAF5EF]/50 p-6 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-bold text-[#176B4D]">
@@ -249,6 +247,7 @@ export function DealDetailPage() {
           {/* Financial Breakdown */}
           <FeeBreakdown
             subtotalMinor={deal.subtotalMinor}
+            deal={deal}
             viewerRole={currentRole}
           />
 
@@ -320,8 +319,8 @@ export function DealDetailPage() {
 
             {isPaid && deal.privatePickupDetails ? (
               <div className="space-y-4 text-xs">
-                {/* Release Code */}
-                <div className="p-3.5 rounded-xl bg-[#EAF5EF] border border-[#176B4D]/30 space-y-1">
+                {/* Release Code, only if provided by backend */}
+                {deal.privatePickupDetails.releaseCode && <div className="p-3.5 rounded-xl bg-[#EAF5EF] border border-[#176B4D]/30 space-y-1">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-[#176B4D] uppercase">
                     <KeyRound className="w-3.5 h-3.5" />
                     <span>Warehouse Release Code</span>
@@ -332,7 +331,7 @@ export function DealDetailPage() {
                   <p className="text-[11px] text-[#64736B]">
                     Present this code at warehouse dock security for inventory release.
                   </p>
-                </div>
+                </div>}
 
                 {/* Warehouse Location */}
                 <div className="space-y-1">
@@ -346,7 +345,7 @@ export function DealDetailPage() {
                 </div>
 
                 {/* Contact Person & Phone */}
-                <div className="space-y-1">
+                {deal.privatePickupDetails.contactPerson && <div className="space-y-1">
                   <span className="text-[11px] font-bold text-[#64736B] uppercase">
                     Dispatch Coordinator
                   </span>
@@ -357,7 +356,7 @@ export function DealDetailPage() {
                     <Phone className="w-3.5 h-3.5" />
                     <span>{deal.privatePickupDetails.phone}</span>
                   </div>
-                </div>
+                </div>}
 
                 {/* Operating Hours */}
                 <div className="space-y-1">
@@ -384,7 +383,7 @@ export function DealDetailPage() {
                   Confidential Logistics Secured
                 </h4>
                 <p className="text-xs text-[#64736B] leading-relaxed">
-                  Precise warehouse loading bay coordinates and dispatch manager phone numbers remain hidden until simulated payment is confirmed.
+                  Pickup information is released by the backend after simulated payment.
                 </p>
                 <div className="text-[11px] text-[#176B4D] font-medium">
                   Complete simulated checkout above to unlock.

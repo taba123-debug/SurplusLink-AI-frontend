@@ -1,3 +1,4 @@
+import { ApiError } from '@/components/shared/ApiError';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
@@ -28,9 +29,9 @@ export function SellerInventoryPage() {
   const queryClient = useQueryClient();
   const { currentOrg } = useDemoStore();
 
-  const { data: lots, isLoading } = useQuery({
+  const { data: lots, isLoading, error, refetch } = useQuery({
     queryKey: ['lots', 'seller-all'],
-    queryFn: () => api.getLots(),
+    queryFn: () => api.getOwnLots ? api.getOwnLots() : api.getLots(),
   });
 
   const sellerLots = (lots || []).filter((l) => l.sellerId === currentOrg.id);
@@ -39,13 +40,15 @@ export function SellerInventoryPage() {
     mutationFn: ({ id, status }: { id: string; status: LotStatus }) =>
       api.updateLotStatus(id, status),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['lots'] });
+      queryClient.invalidateQueries();
       toast.success(`Lot status updated to ${variables.status}`);
     },
     onError: (err: Error) => {
       toast.error('Failed to update lot status', { description: err.message });
     },
   });
+
+  if (error) return <ApiError error={error} retry={refetch} />;
 
   return (
     <div className="space-y-8">
@@ -118,6 +121,7 @@ export function SellerInventoryPage() {
                   <div className="flex flex-wrap items-center gap-4 text-xs text-[#64736B]">
                     <span>
                       Available: <strong>{lot.availableQuantity} {lot.unitType}</strong>
+                      {lot.soldQuantity !== undefined && <span> · Sold: {lot.soldQuantity}</span>}
                       {lot.reservedQuantity > 0 && (
                         <span className="text-[#B27318] ml-1">
                           ({lot.reservedQuantity} reserved in pending deals)
@@ -144,7 +148,7 @@ export function SellerInventoryPage() {
                 </div>
 
                 <div className="flex items-center gap-2 w-full lg:w-auto shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-[#E3EAE5]">
-                  <Link to={`/marketplace/${lot.id}`}>
+                  <Link hidden={lot.status !== 'ACTIVE'} to={`/marketplace/${lot.id}`}>
                     <Button variant="outline" size="sm" className="text-xs">
                       <Eye className="w-3.5 h-3.5 mr-1" />
                       Buyer View
@@ -163,7 +167,7 @@ export function SellerInventoryPage() {
                     </Button>
                   )}
 
-                  {lot.status === 'PAUSED' && (
+                  {(lot.status === 'PAUSED' || lot.status === 'DRAFT') && (
                     <Button
                       variant="secondary"
                       size="sm"
@@ -171,11 +175,11 @@ export function SellerInventoryPage() {
                       className="text-xs font-semibold"
                     >
                       <Play className="w-3.5 h-3.5 mr-1" />
-                      Resume
+                      Publish / Resume
                     </Button>
                   )}
 
-                  {lot.status !== 'CLOSED' && (
+                  {import.meta.env.VITE_DATA_PROVIDER === 'mock' && lot.status !== 'CLOSED' && (
                     <Button
                       variant="outline"
                       size="sm"

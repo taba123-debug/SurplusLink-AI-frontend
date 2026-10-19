@@ -304,7 +304,7 @@ export const INITIAL_LOTS: Lot[] = [
     safetyAttestationConfirmed: true,
     status: 'ACTIVE',
     images: [
-      'https://images.unsplash.com/photo-1621996346565-e3d5d62810d2?auto=format&fit=crop&w=800&q=80',
+      '/images/masala-herb-crackers.png',
     ],
     createdAt: offsetDays(-4),
     updatedAt: offsetDays(-1),

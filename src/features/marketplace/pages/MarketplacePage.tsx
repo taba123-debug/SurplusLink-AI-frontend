@@ -8,11 +8,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/emptyState';
 import { Button } from '@/components/ui/button';
 import { Sparkles, SlidersHorizontal, ArrowUpDown, Package, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 export function MarketplacePage() {
+  const [searchParams] = useSearchParams();
   const [filters, setFilters] = useState<LotFilters>({
-    category: 'ALL',
+    category: (searchParams.get('category') || 'ALL') as LotFilters['category'],
     sortBy: 'newest',
   });
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);

@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-19",
+  "frontend": "http://localhost:5173",
+  "backend": "http://localhost:8000/api/v1",
+  "seller": "Gulberg Packaged Foods (fictional demo)",
+  "buyer": "Johar Town Mini Mart (fictional demo)",
+  "lotId": "12afad26-d8df-4059-9bba-45043a9f7409",
+  "requirementId": "4e157fb7-f39b-4ce8-9d45-bf31e8cde1ba",
+  "offerReference": "9085E180",
+  "dealId": "4cabaec5-51a1-4da1-9a20-5dc6b1cce681",
+  "verifiedThroughBrowser": [
+    "Switch between backend-seeded seller and buyer identities",
+    "Seller AI provider error displayed",
+    "Confirmed manual seller intake saves DRAFT inventory",
+    "Publish draft; inventory visible publicly",
+    "Buyer AI provider error displayed; explicit manual review",
+    "Save requirement for 150 packs under Rs. 20,000",
+    "Matching returns the new inventory as NEGOTIABLE",
+    "Matched requirement and quantity carried into offer form",
+    "Offer 150 packs at Rs. 120; status PENDING",
+    "Seller accepts and backend creates deal",
+    "Backend subtotal 1800000, buyer fee 36000, seller fee 36000, buyer total 1836000, seller net 1764000 minor units",
+    "Pickup information locked before simulated payment",
+    "Simulated payment failure, followed by successful retry",
+    "Only backend-authorized pickup address and deadline displayed after payment",
+    "Seller confirms collection; deal COMPLETED",
+    "Seller inventory shows 50 available and 150 sold"
+  ],
+  "rawPublicApi": {
+    "available_quantity": 50,
+    "quantity_sold": 150,
+    "quantity_reserved": 0,
+    "privateFieldsPresent": []
+  },
+  "corsPreflight": {
+    "origin": "http://localhost:5173",
+    "status": 200,
+    "demoIdentityHeadersAllowed": true
+  },
+  "liveAI": "Blocked: hosted AI access, model or quota unavailable. No simulated inference substituted.",
+  "screenshots": ["browser-paid-deal.png", "browser-completed-deal.png"]
+}

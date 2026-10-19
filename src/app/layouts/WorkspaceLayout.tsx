@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
+import { useDemoStore } from '@/store/useDemoStore';
 import { TopNavbar } from '@/components/layout/TopNavbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 export function WorkspaceLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const { pathname } = useLocation();
+  const currentRole = useDemoStore(s => s.currentRole);
+  if (!pathname.startsWith(`/${currentRole}/`)) return <Navigate to={`/${currentRole}/dashboard`} replace />;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAF8] text-[#17251F]">

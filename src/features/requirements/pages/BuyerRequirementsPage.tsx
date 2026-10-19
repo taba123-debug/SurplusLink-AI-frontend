@@ -1,3 +1,4 @@
+import { ApiError } from '@/components/shared/ApiError';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
@@ -24,7 +25,7 @@ export function BuyerRequirementsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: requirements, isLoading } = useQuery({
+  const { data: requirements, isLoading, error, refetch } = useQuery({
     queryKey: ['requirements'],
     queryFn: () => api.getRequirements(),
   });
@@ -32,13 +33,15 @@ export function BuyerRequirementsPage() {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => api.deleteRequirement(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['requirements'] });
-      toast.success('Requirement deleted successfully');
+      queryClient.invalidateQueries();
+      toast.success('Requirement paused successfully');
     },
     onError: (err: Error) => {
-      toast.error('Failed to delete requirement', { description: err.message });
+      toast.error('Failed to pause requirement', { description: err.message });
     },
   });
+
+  if (error) return <ApiError error={error} retry={refetch} />;
 
   return (
     <div className="space-y-8">
@@ -147,12 +150,12 @@ export function BuyerRequirementsPage() {
 
                 <button
                   onClick={() => {
-                    if (window.confirm('Are you sure you want to delete this saved requirement?')) {
+                    if (window.confirm('Are you sure you want to pause this saved requirement?')) {
                       deleteMutation.mutate(req.id);
                     }
                   }}
                   className="p-2 rounded-xl text-[#64736B] hover:text-[#C44E4E] hover:bg-[#FDF2F2] transition-colors cursor-pointer"
-                  title="Delete requirement"
+                  title="Pause requirement"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

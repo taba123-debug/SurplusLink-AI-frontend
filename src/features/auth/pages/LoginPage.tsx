@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useDemoStore, SEED_ORGANIZATIONS } from '@/store/useDemoStore';
+import { useDemoStore } from '@/store/useDemoStore';
 import { Button } from '@/components/ui/button';
 import { Store, Building2, Shield, ArrowRight, UserCheck } from 'lucide-react';
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const { currentOrg, setCurrentOrg } = useDemoStore();
+  const { currentOrg, setCurrentOrg, organizations } = useDemoStore();
 
   const handleSelectRole = (orgId: string, role: string) => {
     setCurrentOrg(orgId);
@@ -37,7 +37,7 @@ export function LoginPage() {
           </div>
 
           <div className="space-y-2">
-            {SEED_ORGANIZATIONS.filter((o) => o.role === 'buyer').slice(0, 2).map((org) => (
+            {organizations.filter((o) => o.role === 'buyer').slice(0, 2).map((org) => (
               <button
                 key={org.id}
                 onClick={() => handleSelectRole(org.id, org.role)}
@@ -64,7 +64,7 @@ export function LoginPage() {
           </div>
 
           <div className="space-y-2">
-            {SEED_ORGANIZATIONS.filter((o) => o.role === 'seller').slice(0, 2).map((org) => (
+            {organizations.filter((o) => o.role === 'seller').slice(0, 2).map((org) => (
               <button
                 key={org.id}
                 onClick={() => handleSelectRole(org.id, org.role)}
@@ -84,13 +84,13 @@ export function LoginPage() {
         </div>
 
         {/* Admin Demo Card */}
-        <div className="rounded-2xl border border-[#E3EAE5] bg-white p-6 shadow-xs space-y-3">
+        <div hidden={!organizations.some(o => o.role === 'admin')} className="rounded-2xl border border-[#E3EAE5] bg-white p-6 shadow-xs space-y-3">
           <div className="flex items-center gap-2 text-xs font-bold uppercase text-purple-700">
             <Shield className="w-4 h-4" />
             <span>Marketplace Platform Operator</span>
           </div>
 
-          {SEED_ORGANIZATIONS.filter((o) => o.role === 'admin').map((org) => (
+          {organizations.filter((o) => o.role === 'admin').map((org) => (
             <button
               key={org.id}
               onClick={() => handleSelectRole(org.id, org.role)}

@@ -22,9 +22,9 @@ import {
 import type { CreateLotInput, LotExtraction, ProductCategory, UnitType } from '@/types';
 
 const SELLER_PROMPT_EXAMPLES = [
-  'Have 200 sealed biscuit packs in Gulberg, minimum Rs. 110 each, expiry in 45 days.',
+  'Have 200 sealed biscuit packs in Gulberg, Lahore, asking Rs. 140 per pack, minimum Rs. 110, expiry in 45 days.',
   'Surplus batch of 350 crispy tea rusks in Township, asking Rs. 130, reserve Rs. 115, expires in 60 days.',
-  '120 boxes of butter cookies in Quaid-e-Azam Estate, asking Rs. 380, reserve Rs. 320, shelf-life 90 days.',
+  '120 cartons of sealed cakes in Quaid-e-Azam Estate, asking Rs. 380, reserve Rs. 320, shelf-life 90 days.',
 ];
 
 export function NewInventoryPage() {
@@ -40,17 +40,18 @@ export function NewInventoryPage() {
   const [category, setCategory] = useState<ProductCategory>('BISCUITS');
   const [description, setDescription] = useState('');
   const [totalQuantity, setTotalQuantity] = useState<number>(200);
-  const [unitType, setUnitType] = useState<UnitType>('cartons');
-  const [askingPricePkr, setAskingPricePkr] = useState<number>(115);
-  const [reservePricePkr, setReservePricePkr] = useState<number>(100);
+  const [unitType, setUnitType] = useState<UnitType>('packs');
+  const [askingPricePkr, setAskingPricePkr] = useState<number>(140);
+  const [reservePricePkr, setReservePricePkr] = useState<number>(110);
   const [minPurchaseQty, setMinPurchaseQty] = useState<number>(25);
-  const [packagingType, setPackagingType] = useState('Airtight moisture-barrier master carton packaging');
+  const [packagingType, setPackagingType] = useState('sealed');
   const [expiryDays, setExpiryDays] = useState<number>(45);
-  const [storageReq, setStorageReq] = useState('Dry ambient storage (18°C–24°C), relative humidity < 60%');
+  const [storageReq, setStorageReq] = useState('ambient');
   const [city, setCity] = useState('Lahore');
   const [pickupRegion, setPickupRegion] = useState('Gulberg Industrial Area');
-  const [resaleConfirmed, setResaleConfirmed] = useState(true);
-  const [safetyConfirmed, setSafetyConfirmed] = useState(true);
+  const [pickupAddress, setPickupAddress] = useState('');
+  const [resaleConfirmed, setResaleConfirmed] = useState(false);
+  const [safetyConfirmed, setSafetyConfirmed] = useState(false);
 
   // AI Extraction Mutation
   const extractMutation = useMutation({
@@ -60,6 +61,7 @@ export function NewInventoryPage() {
       setCategory(data.category);
       setTotalQuantity(data.total_quantity);
       setUnitType(data.unit_type);
+      setAskingPricePkr(0); setReservePricePkr(0);
       if (data.asking_unit_price_minor) {
         setAskingPricePkr(fromMinorUnits(data.asking_unit_price_minor));
       }
@@ -72,9 +74,7 @@ export function NewInventoryPage() {
       setStorageReq(data.storage_requirements);
       setCity(data.city);
       setPickupRegion(data.pickup_region);
-      setDescription(
-        `Commercial surplus production batch of verified ${data.category.toLowerCase()} in sealed ${data.packaging_type}.`
-      );
+      setDescription(`Sealed surplus ${data.category.toLowerCase()} available for wholesale purchase.`);
       toast.success('AI extracted structured inventory fields!', {
         description: 'Review the details below and configure your confidential reserve price.',
       });
@@ -88,15 +88,14 @@ export function NewInventoryPage() {
   const createLotMutation = useMutation({
     mutationFn: (input: CreateLotInput) => api.createLot(input),
     onSuccess: (newLot) => {
-      queryClient.invalidateQueries({ queryKey: ['lots'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      toast.success('Surplus inventory lot published successfully!', {
-        description: `Reference: ${newLot.lotReference}. Live on buyer marketplace.`,
+      queryClient.invalidateQueries();
+      toast.success('Inventory draft saved. Publish it from My Inventory.', {
+        description: `Reference: ${newLot.lotReference}. Draft saved on backend.`,
       });
       navigate('/seller/inventory');
     },
     onError: (err: Error) => {
-      toast.error('Failed to publish lot', { description: err.message });
+      toast.error('Failed to save inventory', { description: err.message });
     },
   });
 
@@ -124,8 +123,10 @@ export function NewInventoryPage() {
       return;
     }
 
+    if (!pickupAddress.trim() || !['ambient','chilled','frozen'].includes(storageReq) || packagingType !== 'sealed' || reservePricePkr <= 0 || askingPricePkr < reservePricePkr || minPurchaseQty > totalQuantity) { toast.error('Enter a private address, sealed packaging, ambient/chilled/frozen storage, and valid asking/reserve prices and minimum quantity.'); return; }
     const payload: CreateLotInput = {
       title,
+      pickupAddress,
       category,
       description: description || `Overrun batch of sealed ${category.toLowerCase()}.`,
       totalQuantity,
@@ -135,7 +136,7 @@ export function NewInventoryPage() {
       minPurchaseQuantity: minPurchaseQty,
       packagingType,
       expiryDate: offsetDays(expiryDays),
-      pickupDeadline: offsetDays(Math.max(7, expiryDays - 15)),
+      pickupDeadline: offsetDays(Math.max(1, Math.min(3, expiryDays - 1))),
       storageRequirements: storageReq,
       city,
       pickupRegion,
@@ -237,6 +238,8 @@ export function NewInventoryPage() {
           </div>
         </div>
       )}
+      {extractMutation.isError && <p role="alert" className="text-sm text-red-700">{extractMutation.error.message}</p>}
+      {extractMutation.data && <p role="status" className="text-sm text-[#64736B]">Live AI fields require your confirmation. Missing: {extractMutation.data.missing_fields.join(', ') || 'none'}. Minimum order and private pickup address must be entered manually.</p>}
 
       {/* Structured Confirmation Form */}
       <form onSubmit={handleSubmit} className="rounded-2xl border border-[#E3EAE5] bg-white p-6 sm:p-8 shadow-xs space-y-6">
@@ -246,10 +249,10 @@ export function NewInventoryPage() {
 
         {/* Title */}
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+          <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-1">
             Product Title / Batch Designation *
           </label>
-          <Input
+              <Input id="field-NewInventoryPage-1"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. Sealed Tea Biscuit Packs (Family 350g Master Cartons)"
@@ -260,35 +263,35 @@ export function NewInventoryPage() {
         {/* Category & Unit Type */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-2">
               Product Category *
             </label>
-            <select
+              <select id="field-NewInventoryPage-2"
               value={category}
               onChange={(e) => setCategory(e.target.value as ProductCategory)}
               className="w-full h-10 rounded-xl border border-[#E3EAE5] bg-white px-3 text-sm text-[#17251F] focus:outline-none focus:ring-2 focus:ring-[#176B4D]"
             >
-              <option value="BISCUITS">Biscuits</option>
+              <option value="">Select category</option><option value="BISCUITS">Biscuits</option>
               <option value="RUSKS">Rusks & Toast</option>
-              <option value="COOKIES">Cookies</option>
-              <option value="CRACKERS">Crackers</option>
+              <option value="CAKES">Cakes</option>
+              <option value="PASTRIES">Pastries</option><option value="BUNS">Buns</option>
               <option value="PACKAGED_BREAD">Packaged Bread</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-3">
               Unit Type *
             </label>
-            <select
+              <select id="field-NewInventoryPage-3"
               value={unitType}
               onChange={(e) => setUnitType(e.target.value as UnitType)}
               className="w-full h-10 rounded-xl border border-[#E3EAE5] bg-white px-3 text-sm text-[#17251F] focus:outline-none focus:ring-2 focus:ring-[#176B4D]"
             >
-              <option value="packs">Packs</option>
+              <option value="">Select unit</option><option value="packs">Packs</option>
               <option value="cartons">Cartons</option>
-              <option value="boxes">Boxes</option>
-              <option value="cases">Cases</option>
+              <option value="trays">Trays</option>
+              <option value="pieces">Pieces</option>
             </select>
           </div>
         </div>
@@ -296,10 +299,10 @@ export function NewInventoryPage() {
         {/* Quantities */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-4">
               Total Available Batch Quantity *
             </label>
-            <Input
+              <Input id="field-NewInventoryPage-4"
               type="number"
               min="1"
               value={totalQuantity}
@@ -309,10 +312,10 @@ export function NewInventoryPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-5">
               Minimum Purchase Quantity (Min Order) *
             </label>
-            <Input
+              <Input id="field-NewInventoryPage-5"
               type="number"
               min="1"
               max={totalQuantity}
@@ -326,12 +329,12 @@ export function NewInventoryPage() {
         {/* Pricing: Asking vs Confidential Reserve Price */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-[#F8FAF8] border border-[#E3EAE5]">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-6">
               Public Asking Unit Price (PKR)
             </label>
-            <Input
+              <Input id="field-NewInventoryPage-6"
               type="number"
-              min="0"
+              min="1"
               value={askingPricePkr}
               onChange={(e) => setAskingPricePkr(parseFloat(e.target.value) || 0)}
               placeholder="Leave 0 for 'Submit Offer'"
@@ -342,11 +345,11 @@ export function NewInventoryPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5 flex items-center gap-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5 flex items-center gap-1.5" htmlFor="field-NewInventoryPage-7">
               <Lock className="w-3.5 h-3.5 text-[#176B4D]" />
               <span>Confidential Reserve Price (PKR)</span>
             </label>
-            <Input
+              <Input id="field-NewInventoryPage-7"
               type="number"
               min="0"
               value={reservePricePkr}
@@ -362,24 +365,24 @@ export function NewInventoryPage() {
         {/* Packaging & Storage */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-8">
               Packaging Specification
             </label>
-            <Input
+              <Input id="field-NewInventoryPage-8"
               value={packagingType}
               onChange={(e) => setPackagingType(e.target.value)}
-              placeholder="e.g. Airtight foil master cartons (24 units)"
+              placeholder="sealed"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-9">
               Storage Instructions
             </label>
-            <Input
+              <Input id="field-NewInventoryPage-9"
               value={storageReq}
               onChange={(e) => setStorageReq(e.target.value)}
-              placeholder="e.g. Cool, dry ambient warehouse (18-24°C)"
+              placeholder="ambient, chilled or frozen"
             />
           </div>
         </div>
@@ -387,10 +390,10 @@ export function NewInventoryPage() {
         {/* Expiry & Logistics Location */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-10">
               Remaining Shelf-Life (Days) *
             </label>
-            <Input
+              <Input id="field-NewInventoryPage-10"
               type="number"
               min="5"
               value={expiryDays}
@@ -403,10 +406,10 @@ export function NewInventoryPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-11">
               City *
             </label>
-            <Input
+              <Input id="field-NewInventoryPage-11"
               value={city}
               onChange={(e) => setCity(e.target.value)}
               required
@@ -414,10 +417,10 @@ export function NewInventoryPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-12">
               General District / Area *
             </label>
-            <Input
+              <Input id="field-NewInventoryPage-12"
               value={pickupRegion}
               onChange={(e) => setPickupRegion(e.target.value)}
               placeholder="e.g. Gulberg Industrial Area"
@@ -426,16 +429,17 @@ export function NewInventoryPage() {
           </div>
         </div>
 
+        <div><label className="block text-xs font-bold mb-2" htmlFor="pickup-address">Private pickup address *</label><Input id="pickup-address" value={pickupAddress} onChange={e => setPickupAddress(e.target.value)} required placeholder="Fictional warehouse address; released by backend after payment" /></div>
         {/* Description */}
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+          <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-NewInventoryPage-13">
             Surplus Lot Description & Background
           </label>
-          <Textarea
+              <Textarea id="field-NewInventoryPage-13"
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe batch condition, reasons for surplus (export cancellation, seasonal overrun), loading dock availability..."
+            placeholder="Public description: product and condition only. Keep reserve prices and private addresses out of this field."
           />
         </div>
 
@@ -487,7 +491,7 @@ export function NewInventoryPage() {
               className="font-bold shadow-sm"
             >
               <CheckCircle2 className="w-4 h-4 mr-1.5" />
-              Publish Lot to Marketplace
+              Save Inventory Draft
             </Button>
           </div>
         </div>

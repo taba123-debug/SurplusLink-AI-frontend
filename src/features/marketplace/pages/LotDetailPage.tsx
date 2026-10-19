@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/services/api';
-import { formatPKR, calculateDealFinancials } from '@/lib/money';
+import { formatPKR } from '@/lib/money';
 import { formatDate, getDaysRemaining, getShelfLifeUrgency } from '@/lib/dates';
 import { StatusBadge } from '@/components/ui/statusBadge';
 import { Button } from '@/components/ui/button';
@@ -27,6 +27,8 @@ import {
 export function LotDetailPage() {
   const { lotId } = useParams<{ lotId: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [now] = useState(() => Date.now());
   const [offerDialogOpen, setOfferDialogOpen] = useState(false);
 
   const { data: lot, isLoading, isError } = useQuery({
@@ -69,7 +71,7 @@ export function LotDetailPage() {
 
   const estimatedSubtotalMinor =
     lot.askingUnitPriceMinor ? lot.askingUnitPriceMinor * lot.minPurchaseQuantity : 250000;
-  const financials = calculateDealFinancials(estimatedSubtotalMinor);
+
 
   // Related lots from same category
   const relatedLots = allLots
@@ -251,15 +253,15 @@ export function LotDetailPage() {
               </div>
               <div className="flex justify-between text-[#64736B]">
                 <span>Estimated Subtotal</span>
-                <span className="font-medium text-[#17251F]">{formatPKR(financials.subtotalMinor)}</span>
+                <span className="font-medium text-[#17251F]">{formatPKR(estimatedSubtotalMinor)}</span>
               </div>
               <div className="flex justify-between text-[#64736B]">
                 <span>Buyer Platform Fee (2%)</span>
-                <span className="font-medium text-[#17251F]">{formatPKR(financials.buyerServiceFeeMinor)}</span>
+                <span className="font-medium text-[#17251F]">Confirmed on backend deal</span>
               </div>
               <div className="pt-2 border-t border-[#E3EAE5] flex justify-between font-bold text-[#17251F]">
                 <span>Est. Total Payable</span>
-                <span className="text-[#176B4D]">{formatPKR(financials.buyerTotalMinor)}</span>
+                <span className="text-[#176B4D]">Confirmed after acceptance</span>
               </div>
             </div>
 
@@ -269,7 +271,7 @@ export function LotDetailPage() {
               size="lg"
               className="w-full text-sm font-bold shadow-sm"
               onClick={() => setOfferDialogOpen(true)}
-              disabled={lot.status !== 'ACTIVE' && lot.status !== 'PARTIALLY_SOLD'}
+              disabled={(lot.status !== 'ACTIVE' && lot.status !== 'PARTIALLY_SOLD') || daysLeft <= 0 || lot.availableQuantity < lot.minPurchaseQuantity || Date.parse(lot.pickupDeadline) <= now}
             >
               {lot.status === 'ACTIVE' || lot.status === 'PARTIALLY_SOLD'
                 ? 'Make Wholesale Offer'
@@ -328,6 +330,8 @@ export function LotDetailPage() {
 
       {/* Offer Submission Dialog */}
       <OfferDialog
+        requirementId={searchParams.get('requirementId') || undefined}
+        defaultQuantity={Number(searchParams.get('quantity')) || undefined}
         lot={lot}
         open={offerDialogOpen}
         onOpenChange={setOfferDialogOpen}

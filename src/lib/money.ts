@@ -50,7 +50,7 @@ export function formatPKR(
   }
 
   const formatted = new Intl.NumberFormat('en-PK', {
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 2,
     minimumFractionDigits: 0,
   }).format(pkr);
 

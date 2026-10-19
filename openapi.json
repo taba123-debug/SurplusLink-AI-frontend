@@ -1,0 +1,4877 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SurplusLink AI API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/demo/organizations": {
+      "get": {
+        "tags": [
+          "Demo context"
+        ],
+        "summary": "Organizations",
+        "operationId": "organizations_api_v1_demo_organizations_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DemoOrganization"
+                  },
+                  "type": "array",
+                  "title": "Response Organizations Api V1 Demo Organizations Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/identities": {
+      "get": {
+        "tags": [
+          "Demo context"
+        ],
+        "summary": "Identities",
+        "operationId": "identities_api_v1_demo_identities_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DemoIdentityOption"
+                  },
+                  "type": "array",
+                  "title": "Response Identities Api V1 Demo Identities Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lots": {
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Create Lot",
+        "operationId": "create_lot_api_v1_lots_post",
+        "parameters": [
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LotCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LotPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "List Lots",
+        "operationId": "list_lots_api_v1_lots_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LotPublic"
+                  },
+                  "title": "Response List Lots Api V1 Lots Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lots/mine": {
+      "get": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Own Lots",
+        "operationId": "own_lots_api_v1_lots_mine_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LotPrivate"
+                  },
+                  "title": "Response Own Lots Api V1 Lots Mine Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lots/{id}": {
+      "get": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Get Lot",
+        "operationId": "get_lot_api_v1_lots__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LotPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Patch Lot",
+        "operationId": "patch_lot_api_v1_lots__id__patch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LotPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LotPrivate"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lots/{id}/publish": {
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Publish Lot",
+        "operationId": "publish_lot_api_v1_lots__id__publish_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LotPrivate"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lots/{id}/pause": {
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Pause Lot",
+        "operationId": "pause_lot_api_v1_lots__id__pause_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LotPrivate"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requirements": {
+      "post": {
+        "tags": [
+          "Requirements"
+        ],
+        "summary": "Create Requirement",
+        "operationId": "create_requirement_api_v1_requirements_post",
+        "parameters": [
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequirementCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Requirements"
+        ],
+        "summary": "List Requirements",
+        "operationId": "list_requirements_api_v1_requirements_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RequirementPublic"
+                  },
+                  "title": "Response List Requirements Api V1 Requirements Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requirements/{id}": {
+      "get": {
+        "tags": [
+          "Requirements"
+        ],
+        "summary": "Get Requirement",
+        "operationId": "get_requirement_api_v1_requirements__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Requirements"
+        ],
+        "summary": "Patch Requirement",
+        "operationId": "patch_requirement_api_v1_requirements__id__patch",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequirementPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requirements/{id}/pause": {
+      "post": {
+        "tags": [
+          "Requirements"
+        ],
+        "summary": "Pause Requirement",
+        "operationId": "pause_requirement_api_v1_requirements__id__pause_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/requirements/{id}/matches": {
+      "get": {
+        "tags": [
+          "Matching"
+        ],
+        "summary": "Requirement Matches",
+        "operationId": "requirement_matches_api_v1_requirements__id__matches_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LotMatch"
+                  },
+                  "title": "Response Requirement Matches Api V1 Requirements  Id  Matches Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lots/{id}/matching-buyers": {
+      "get": {
+        "tags": [
+          "Matching"
+        ],
+        "summary": "Matching Buyers",
+        "operationId": "matching_buyers_api_v1_lots__id__matching_buyers_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BuyerMatch"
+                  },
+                  "title": "Response Matching Buyers Api V1 Lots  Id  Matching Buyers Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lots/{id}/offers": {
+      "post": {
+        "tags": [
+          "Offers"
+        ],
+        "summary": "Create Offer",
+        "operationId": "create_offer_api_v1_lots__id__offers_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfferCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/offers": {
+      "get": {
+        "tags": [
+          "Offers"
+        ],
+        "summary": "List Offers",
+        "operationId": "list_offers_api_v1_offers_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OfferResponse"
+                  },
+                  "title": "Response List Offers Api V1 Offers Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/offers/{id}/respond": {
+      "post": {
+        "tags": [
+          "Offers"
+        ],
+        "summary": "Respond",
+        "operationId": "respond_api_v1_offers__id__respond_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Respond"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespondResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals/{id}": {
+      "get": {
+        "tags": [
+          "Deals"
+        ],
+        "summary": "Get Deal",
+        "operationId": "get_deal_api_v1_deals__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals/{id}/checkout": {
+      "post": {
+        "tags": [
+          "Demo checkout"
+        ],
+        "summary": "DEMO ONLY: create a pending mock payment",
+        "operationId": "checkout_api_v1_deals__id__checkout_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/parse-lot": {
+      "post": {
+        "tags": [
+          "AI extraction"
+        ],
+        "summary": "Parse Lot",
+        "operationId": "parse_lot_api_v1_ai_parse_lot_post",
+        "parameters": [
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LotParseResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ai/parse-requirement": {
+      "post": {
+        "tags": [
+          "AI extraction"
+        ],
+        "summary": "Parse Requirement",
+        "operationId": "parse_requirement_api_v1_ai_parse_requirement_post",
+        "parameters": [
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ParseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementParseResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations": {
+      "get": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Organizations",
+        "operationId": "organizations_api_v1_organizations_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DemoOrganization"
+                  },
+                  "title": "Response Organizations Api V1 Organizations Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/me": {
+      "get": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Current Organization",
+        "operationId": "current_organization_api_v1_organizations_me_get",
+        "parameters": [
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationPrivate"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/{id}": {
+      "get": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Organization",
+        "operationId": "organization_api_v1_organizations__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoOrganization"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/offers/{id}": {
+      "get": {
+        "tags": [
+          "Offers"
+        ],
+        "summary": "Detail",
+        "operationId": "detail_api_v1_offers__id__get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/offers/{id}/withdraw": {
+      "post": {
+        "tags": [
+          "Offers"
+        ],
+        "summary": "Withdraw",
+        "operationId": "withdraw_api_v1_offers__id__withdraw_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals": {
+      "get": {
+        "tags": [
+          "Deals"
+        ],
+        "summary": "List Deals",
+        "operationId": "list_deals_api_v1_deals_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DealResponse"
+                  },
+                  "title": "Response List Deals Api V1 Deals Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals/{id}/cancel": {
+      "post": {
+        "tags": [
+          "Deals"
+        ],
+        "summary": "Cancel",
+        "operationId": "cancel_api_v1_deals__id__cancel_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals/{id}/complete": {
+      "post": {
+        "tags": [
+          "Deals"
+        ],
+        "summary": "Seller confirms physical collection",
+        "operationId": "complete_api_v1_deals__id__complete_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals/{id}/pickup-details": {
+      "get": {
+        "tags": [
+          "Deals"
+        ],
+        "summary": "Pickup",
+        "operationId": "pickup_api_v1_deals__id__pickup_details_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PickupDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deals/{id}/payment": {
+      "get": {
+        "tags": [
+          "Demo payments"
+        ],
+        "summary": "Current Payment",
+        "operationId": "current_payment_api_v1_deals__id__payment_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/mock/{id}/succeed": {
+      "post": {
+        "tags": [
+          "Demo payments"
+        ],
+        "summary": "DEMO ONLY: simulate successful payment",
+        "operationId": "succeed_api_v1_payments_mock__id__succeed_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payments/mock/{id}/fail": {
+      "post": {
+        "tags": [
+          "Demo payments"
+        ],
+        "summary": "DEMO ONLY: simulate failed payment",
+        "operationId": "fail_api_v1_payments_mock__id__fail_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Id"
+            }
+          },
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dashboard/summary": {
+      "get": {
+        "tags": [
+          "Demo dashboard"
+        ],
+        "summary": "Dashboard",
+        "operationId": "dashboard_api_v1_dashboard_summary_get",
+        "parameters": [
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/metadata": {
+      "get": {
+        "tags": [
+          "Demo dashboard"
+        ],
+        "summary": "Metadata",
+        "operationId": "metadata_api_v1_demo_metadata_get",
+        "parameters": [
+          {
+            "name": "X-Demo-Org-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only active organization selection.",
+              "title": "X-Demo-Org-Id"
+            },
+            "description": "Development-only active organization selection."
+          },
+          {
+            "name": "X-Demo-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Development-only fictional user selection; not production authentication.",
+              "title": "X-Demo-User-Id"
+            },
+            "description": "Development-only fictional user selection; not production authentication."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ping": {
+      "get": {
+        "summary": "Ping",
+        "operationId": "ping_api_v1_ping_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "summary": "Ready",
+        "operationId": "ready_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BuyerMatch": {
+        "properties": {
+          "requirement_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Requirement Id"
+          },
+          "requirement": {
+            "$ref": "#/components/schemas/RequirementPublic"
+          },
+          "match_type": {
+            "type": "string",
+            "enum": [
+              "DIRECT",
+              "NEGOTIABLE"
+            ],
+            "title": "Match Type"
+          },
+          "match_score": {
+            "type": "integer",
+            "title": "Match Score"
+          },
+          "estimated_subtotal_minor": {
+            "type": "integer",
+            "title": "Estimated Subtotal Minor"
+          },
+          "estimated_buyer_fee_minor": {
+            "type": "integer",
+            "title": "Estimated Buyer Fee Minor"
+          },
+          "estimated_buyer_total_minor": {
+            "type": "integer",
+            "title": "Estimated Buyer Total Minor"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Reasons"
+          }
+        },
+        "type": "object",
+        "required": [
+          "requirement_id",
+          "requirement",
+          "match_type",
+          "match_score",
+          "estimated_subtotal_minor",
+          "estimated_buyer_fee_minor",
+          "estimated_buyer_total_minor",
+          "reasons"
+        ],
+        "title": "BuyerMatch"
+      },
+      "BuyerMetrics": {
+        "properties": {
+          "active_requirements": {
+            "type": "integer",
+            "title": "Active Requirements"
+          },
+          "compatible_opportunities_count": {
+            "type": "integer",
+            "title": "Compatible Opportunities Count"
+          },
+          "pending_offers": {
+            "type": "integer",
+            "title": "Pending Offers"
+          },
+          "accepted_deals": {
+            "type": "integer",
+            "title": "Accepted Deals"
+          },
+          "completed_purchases": {
+            "type": "integer",
+            "title": "Completed Purchases"
+          },
+          "total_simulated_purchase_value_minor": {
+            "type": "integer",
+            "title": "Total Simulated Purchase Value Minor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "active_requirements",
+          "compatible_opportunities_count",
+          "pending_offers",
+          "accepted_deals",
+          "completed_purchases",
+          "total_simulated_purchase_value_minor"
+        ],
+        "title": "BuyerMetrics"
+      },
+      "CheckoutResponse": {
+        "properties": {
+          "simulated": {
+            "type": "boolean",
+            "const": true,
+            "title": "Simulated",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "DEMO ONLY: pending mock payment; no money moved."
+          },
+          "payment": {
+            "$ref": "#/components/schemas/PaymentResponse"
+          },
+          "deal": {
+            "$ref": "#/components/schemas/DealResponse"
+          },
+          "payment_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Payment Id",
+            "readOnly": true
+          },
+          "deal_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Deal Id",
+            "readOnly": true
+          },
+          "amount_minor": {
+            "type": "integer",
+            "title": "Amount Minor",
+            "readOnly": true
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency",
+            "readOnly": true
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "payment",
+          "deal",
+          "payment_id",
+          "deal_id",
+          "amount_minor",
+          "currency",
+          "status"
+        ],
+        "title": "CheckoutResponse"
+      },
+      "DashboardResponse": {
+        "properties": {
+          "simulated": {
+            "type": "boolean",
+            "const": true,
+            "title": "Simulated",
+            "default": true
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Organization Id"
+          },
+          "buyer": {
+            "$ref": "#/components/schemas/BuyerMetrics"
+          },
+          "seller": {
+            "$ref": "#/components/schemas/SellerMetrics"
+          },
+          "platform_demo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlatformMetrics"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "organization_id",
+          "buyer",
+          "seller",
+          "platform_demo"
+        ],
+        "title": "DashboardResponse"
+      },
+      "DealResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "offer_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Offer Id"
+          },
+          "lot_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lot Id"
+          },
+          "buyer_org_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Buyer Org Id"
+          },
+          "seller_org_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Seller Org Id"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "agreed_unit_price_minor": {
+            "type": "integer",
+            "title": "Agreed Unit Price Minor"
+          },
+          "subtotal_minor": {
+            "type": "integer",
+            "title": "Subtotal Minor"
+          },
+          "buyer_fee_bps": {
+            "type": "integer",
+            "title": "Buyer Fee Bps"
+          },
+          "seller_fee_bps": {
+            "type": "integer",
+            "title": "Seller Fee Bps"
+          },
+          "buyer_fee_minor": {
+            "type": "integer",
+            "title": "Buyer Fee Minor"
+          },
+          "seller_fee_minor": {
+            "type": "integer",
+            "title": "Seller Fee Minor"
+          },
+          "buyer_total_minor": {
+            "type": "integer",
+            "title": "Buyer Total Minor"
+          },
+          "seller_net_minor": {
+            "type": "integer",
+            "title": "Seller Net Minor"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "payment_due_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Payment Due At",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "offer_id",
+          "lot_id",
+          "buyer_org_id",
+          "seller_org_id",
+          "quantity",
+          "agreed_unit_price_minor",
+          "subtotal_minor",
+          "buyer_fee_bps",
+          "seller_fee_bps",
+          "buyer_fee_minor",
+          "seller_fee_minor",
+          "buyer_total_minor",
+          "seller_net_minor",
+          "currency",
+          "status",
+          "created_at",
+          "payment_due_at"
+        ],
+        "title": "DealResponse"
+      },
+      "DemoIdentityOption": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "User Id"
+          },
+          "user_name": {
+            "type": "string",
+            "title": "User Name"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Organization Id"
+          },
+          "organization_name": {
+            "type": "string",
+            "title": "Organization Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "user_name",
+          "organization_id",
+          "organization_name",
+          "role"
+        ],
+        "title": "DemoIdentityOption"
+      },
+      "DemoOrganization": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "business_type": {
+            "type": "string",
+            "title": "Business Type"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "business_type",
+          "city"
+        ],
+        "title": "DemoOrganization"
+      },
+      "ErrorDetail": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorDetail"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok",
+            "title": "Status",
+            "default": "ok"
+          },
+          "service": {
+            "type": "string",
+            "const": "surpluslink-api",
+            "title": "Service",
+            "default": "surpluslink-api"
+          }
+        },
+        "type": "object",
+        "title": "HealthResponse"
+      },
+      "LotCreate": {
+        "properties": {
+          "product_name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Product Name"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "biscuits",
+              "bread",
+              "cakes",
+              "pastries",
+              "rusks",
+              "buns"
+            ],
+            "title": "Category"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 1,
+            "title": "Description"
+          },
+          "original_description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Original Description"
+          },
+          "quantity_total": {
+            "type": "integer",
+            "maximum": 1000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Quantity Total"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "pack",
+              "carton",
+              "tray",
+              "piece"
+            ],
+            "title": "Unit"
+          },
+          "asking_unit_price_minor": {
+            "type": "integer",
+            "maximum": 1000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Asking Unit Price Minor"
+          },
+          "min_unit_price_minor": {
+            "type": "integer",
+            "maximum": 1000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Min Unit Price Minor"
+          },
+          "minimum_order_quantity": {
+            "type": "integer",
+            "maximum": 1000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Minimum Order Quantity"
+          },
+          "packaging_type": {
+            "type": "string",
+            "const": "sealed",
+            "title": "Packaging Type"
+          },
+          "storage_type": {
+            "type": "string",
+            "enum": [
+              "ambient",
+              "chilled",
+              "frozen"
+            ],
+            "title": "Storage Type"
+          },
+          "manufacture_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manufacture Date"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Expiry Date"
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "City"
+          },
+          "pickup_area": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Pickup Area"
+          },
+          "pickup_address": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Pickup Address"
+          },
+          "pickup_deadline": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Pickup Deadline"
+          },
+          "resale_confirmed": {
+            "type": "boolean",
+            "title": "Resale Confirmed"
+          },
+          "information_confirmed": {
+            "type": "boolean",
+            "title": "Information Confirmed"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "ACTIVE"
+            ],
+            "title": "Status",
+            "default": "ACTIVE"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "product_name",
+          "category",
+          "description",
+          "quantity_total",
+          "unit",
+          "asking_unit_price_minor",
+          "min_unit_price_minor",
+          "minimum_order_quantity",
+          "packaging_type",
+          "storage_type",
+          "expiry_date",
+          "city",
+          "pickup_area",
+          "pickup_address",
+          "pickup_deadline",
+          "resale_confirmed",
+          "information_confirmed"
+        ],
+        "title": "LotCreate"
+      },
+      "LotExtraction": {
+        "properties": {
+          "evidence": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Evidence"
+          },
+          "product_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Name"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "biscuits",
+                  "bread",
+                  "cakes",
+                  "pastries",
+                  "rusks",
+                  "buns"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "quantity_total": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantity Total"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "pack",
+                  "carton",
+                  "tray",
+                  "piece"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "packaging_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "sealed"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Packaging Type"
+          },
+          "storage_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "ambient",
+                  "chilled",
+                  "frozen"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storage Type"
+          },
+          "expiry_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiry Date"
+          },
+          "remaining_shelf_life_days": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 3650.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Shelf Life Days"
+          },
+          "relative_expiry_expression": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relative Expiry Expression"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "pickup_area": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pickup Area"
+          },
+          "asking_unit_price_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asking Unit Price Minor",
+            "readOnly": true
+          },
+          "min_unit_price_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Unit Price Minor",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "asking_unit_price_minor",
+          "min_unit_price_minor"
+        ],
+        "title": "LotExtraction"
+      },
+      "LotMatch": {
+        "properties": {
+          "lot_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lot Id"
+          },
+          "lot": {
+            "$ref": "#/components/schemas/LotPublic"
+          },
+          "match_type": {
+            "type": "string",
+            "enum": [
+              "DIRECT",
+              "NEGOTIABLE"
+            ],
+            "title": "Match Type"
+          },
+          "match_score": {
+            "type": "integer",
+            "title": "Match Score"
+          },
+          "estimated_subtotal_minor": {
+            "type": "integer",
+            "title": "Estimated Subtotal Minor"
+          },
+          "estimated_buyer_fee_minor": {
+            "type": "integer",
+            "title": "Estimated Buyer Fee Minor"
+          },
+          "estimated_buyer_total_minor": {
+            "type": "integer",
+            "title": "Estimated Buyer Total Minor"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Reasons"
+          }
+        },
+        "type": "object",
+        "required": [
+          "lot_id",
+          "lot",
+          "match_type",
+          "match_score",
+          "estimated_subtotal_minor",
+          "estimated_buyer_fee_minor",
+          "estimated_buyer_total_minor",
+          "reasons"
+        ],
+        "title": "LotMatch"
+      },
+      "LotParseResponse": {
+        "properties": {
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "simulated": {
+            "type": "boolean",
+            "title": "Simulated"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "live",
+              "mock"
+            ],
+            "title": "Mode"
+          },
+          "data": {
+            "$ref": "#/components/schemas/LotExtraction"
+          },
+          "missing_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Missing Fields"
+          },
+          "needs_review": {
+            "type": "boolean",
+            "const": true,
+            "title": "Needs Review",
+            "default": true
+          },
+          "persisted": {
+            "type": "boolean",
+            "const": false,
+            "title": "Persisted",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "provider",
+          "model",
+          "simulated",
+          "mode",
+          "data",
+          "missing_fields"
+        ],
+        "title": "LotParseResponse"
+      },
+      "LotPatch": {
+        "properties": {
+          "product_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Name"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "biscuits",
+                  "bread",
+                  "cakes",
+                  "pastries",
+                  "rusks",
+                  "buns"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "original_description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Original Description"
+          },
+          "quantity_total": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantity Total"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "pack",
+                  "carton",
+                  "tray",
+                  "piece"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "asking_unit_price_minor": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asking Unit Price Minor"
+          },
+          "min_unit_price_minor": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Unit Price Minor"
+          },
+          "minimum_order_quantity": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimum Order Quantity"
+          },
+          "packaging_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "sealed"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Packaging Type"
+          },
+          "storage_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "ambient",
+                  "chilled",
+                  "frozen"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storage Type"
+          },
+          "manufacture_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manufacture Date"
+          },
+          "expiry_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expiry Date"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "pickup_area": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pickup Area"
+          },
+          "pickup_address": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pickup Address"
+          },
+          "pickup_deadline": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pickup Deadline"
+          },
+          "resale_confirmed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resale Confirmed"
+          },
+          "information_confirmed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Information Confirmed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LotPatch"
+      },
+      "LotPrivate": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "seller_org_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Seller Org Id"
+          },
+          "product_name": {
+            "type": "string",
+            "title": "Product Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "quantity_total": {
+            "type": "integer",
+            "title": "Quantity Total"
+          },
+          "quantity_reserved": {
+            "type": "integer",
+            "title": "Quantity Reserved"
+          },
+          "quantity_sold": {
+            "type": "integer",
+            "title": "Quantity Sold"
+          },
+          "available_quantity": {
+            "type": "integer",
+            "title": "Available Quantity"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "asking_unit_price_minor": {
+            "type": "integer",
+            "title": "Asking Unit Price Minor"
+          },
+          "minimum_order_quantity": {
+            "type": "integer",
+            "title": "Minimum Order Quantity"
+          },
+          "packaging_type": {
+            "type": "string",
+            "title": "Packaging Type"
+          },
+          "storage_type": {
+            "type": "string",
+            "title": "Storage Type"
+          },
+          "manufacture_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manufacture Date"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Expiry Date"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "pickup_area": {
+            "type": "string",
+            "title": "Pickup Area"
+          },
+          "pickup_deadline": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Pickup Deadline"
+          },
+          "resale_confirmed": {
+            "type": "boolean",
+            "title": "Resale Confirmed"
+          },
+          "information_confirmed": {
+            "type": "boolean",
+            "title": "Information Confirmed"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "min_unit_price_minor": {
+            "type": "integer",
+            "title": "Min Unit Price Minor"
+          },
+          "pickup_address": {
+            "type": "string",
+            "title": "Pickup Address"
+          },
+          "original_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Original Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "seller_org_id",
+          "product_name",
+          "category",
+          "description",
+          "quantity_total",
+          "quantity_reserved",
+          "quantity_sold",
+          "available_quantity",
+          "unit",
+          "asking_unit_price_minor",
+          "minimum_order_quantity",
+          "packaging_type",
+          "storage_type",
+          "manufacture_date",
+          "expiry_date",
+          "city",
+          "pickup_area",
+          "pickup_deadline",
+          "resale_confirmed",
+          "information_confirmed",
+          "status",
+          "created_at",
+          "min_unit_price_minor",
+          "pickup_address",
+          "original_description"
+        ],
+        "title": "LotPrivate"
+      },
+      "LotPublic": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "seller_org_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Seller Org Id"
+          },
+          "product_name": {
+            "type": "string",
+            "title": "Product Name"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "quantity_total": {
+            "type": "integer",
+            "title": "Quantity Total"
+          },
+          "quantity_reserved": {
+            "type": "integer",
+            "title": "Quantity Reserved"
+          },
+          "quantity_sold": {
+            "type": "integer",
+            "title": "Quantity Sold"
+          },
+          "available_quantity": {
+            "type": "integer",
+            "title": "Available Quantity"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "asking_unit_price_minor": {
+            "type": "integer",
+            "title": "Asking Unit Price Minor"
+          },
+          "minimum_order_quantity": {
+            "type": "integer",
+            "title": "Minimum Order Quantity"
+          },
+          "packaging_type": {
+            "type": "string",
+            "title": "Packaging Type"
+          },
+          "storage_type": {
+            "type": "string",
+            "title": "Storage Type"
+          },
+          "manufacture_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manufacture Date"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Expiry Date"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "pickup_area": {
+            "type": "string",
+            "title": "Pickup Area"
+          },
+          "pickup_deadline": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Pickup Deadline"
+          },
+          "resale_confirmed": {
+            "type": "boolean",
+            "title": "Resale Confirmed"
+          },
+          "information_confirmed": {
+            "type": "boolean",
+            "title": "Information Confirmed"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "seller_org_id",
+          "product_name",
+          "category",
+          "description",
+          "quantity_total",
+          "quantity_reserved",
+          "quantity_sold",
+          "available_quantity",
+          "unit",
+          "asking_unit_price_minor",
+          "minimum_order_quantity",
+          "packaging_type",
+          "storage_type",
+          "manufacture_date",
+          "expiry_date",
+          "city",
+          "pickup_area",
+          "pickup_deadline",
+          "resale_confirmed",
+          "information_confirmed",
+          "status",
+          "created_at"
+        ],
+        "title": "LotPublic"
+      },
+      "OfferCreate": {
+        "properties": {
+          "requirement_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requirement Id"
+          },
+          "quantity": {
+            "type": "integer",
+            "maximum": 1000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Quantity"
+          },
+          "offered_unit_price_minor": {
+            "type": "integer",
+            "maximum": 1000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Offered Unit Price Minor"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "quantity",
+          "offered_unit_price_minor"
+        ],
+        "title": "OfferCreate"
+      },
+      "OfferResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "lot_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Lot Id"
+          },
+          "buyer_org_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Buyer Org Id"
+          },
+          "requirement_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requirement Id"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "offered_unit_price_minor": {
+            "type": "integer",
+            "title": "Offered Unit Price Minor"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "lot_id",
+          "buyer_org_id",
+          "requirement_id",
+          "quantity",
+          "offered_unit_price_minor",
+          "expires_at",
+          "status",
+          "created_at"
+        ],
+        "title": "OfferResponse"
+      },
+      "OrganizationPrivate": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "business_type": {
+            "type": "string",
+            "title": "Business Type"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "area": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Area"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "contact_email": {
+            "type": "string",
+            "title": "Contact Email"
+          },
+          "contact_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Phone"
+          },
+          "verification_status": {
+            "type": "string",
+            "title": "Verification Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "business_type",
+          "city",
+          "area",
+          "address",
+          "contact_email",
+          "contact_phone",
+          "verification_status"
+        ],
+        "title": "OrganizationPrivate"
+      },
+      "ParseRequest": {
+        "properties": {
+          "description": {
+            "type": "string",
+            "maxLength": 6000,
+            "minLength": 1,
+            "title": "Description"
+          },
+          "reference_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Date"
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timezone"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "description"
+        ],
+        "title": "ParseRequest"
+      },
+      "PaymentResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "deal_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Deal Id"
+          },
+          "provider": {
+            "type": "string",
+            "const": "MOCK",
+            "title": "Provider"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "amount_minor": {
+            "type": "integer",
+            "title": "Amount Minor"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "paid_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paid At"
+          },
+          "simulated": {
+            "type": "boolean",
+            "const": true,
+            "title": "Simulated",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "deal_id",
+          "provider",
+          "status",
+          "amount_minor",
+          "currency",
+          "paid_at"
+        ],
+        "title": "PaymentResponse"
+      },
+      "PickupDetails": {
+        "properties": {
+          "deal_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Deal Id"
+          },
+          "pickup_address": {
+            "type": "string",
+            "title": "Pickup Address"
+          },
+          "pickup_area": {
+            "type": "string",
+            "title": "Pickup Area"
+          },
+          "pickup_deadline": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Pickup Deadline"
+          },
+          "simulated": {
+            "type": "boolean",
+            "const": true,
+            "title": "Simulated",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "deal_id",
+          "pickup_address",
+          "pickup_area",
+          "pickup_deadline"
+        ],
+        "title": "PickupDetails"
+      },
+      "PingResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "SurplusLink API v1 is running"
+          }
+        },
+        "type": "object",
+        "title": "PingResponse"
+      },
+      "PlatformMetrics": {
+        "properties": {
+          "completed_simulated_deals": {
+            "type": "integer",
+            "title": "Completed Simulated Deals"
+          },
+          "gross_completed_deal_value_minor": {
+            "type": "integer",
+            "title": "Gross Completed Deal Value Minor"
+          },
+          "total_simulated_buyer_fees_minor": {
+            "type": "integer",
+            "title": "Total Simulated Buyer Fees Minor"
+          },
+          "total_simulated_seller_fees_minor": {
+            "type": "integer",
+            "title": "Total Simulated Seller Fees Minor"
+          },
+          "total_simulated_platform_revenue_minor": {
+            "type": "integer",
+            "title": "Total Simulated Platform Revenue Minor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "completed_simulated_deals",
+          "gross_completed_deal_value_minor",
+          "total_simulated_buyer_fees_minor",
+          "total_simulated_seller_fees_minor",
+          "total_simulated_platform_revenue_minor"
+        ],
+        "title": "PlatformMetrics"
+      },
+      "ReadinessResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ready",
+            "title": "Status",
+            "default": "ready"
+          },
+          "database": {
+            "type": "string",
+            "const": "connected",
+            "title": "Database",
+            "default": "connected"
+          }
+        },
+        "type": "object",
+        "title": "ReadinessResponse"
+      },
+      "RequirementCreate": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "original_description": {
+            "type": "string",
+            "maxLength": 10000,
+            "minLength": 1,
+            "title": "Original Description"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "biscuits",
+              "bread",
+              "cakes",
+              "pastries",
+              "rusks",
+              "buns"
+            ],
+            "title": "Category"
+          },
+          "required_quantity": {
+            "type": "integer",
+            "maximum": 1000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Required Quantity"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "pack",
+              "carton",
+              "tray",
+              "piece"
+            ],
+            "title": "Unit"
+          },
+          "max_total_budget_minor": {
+            "type": "integer",
+            "maximum": 1000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Max Total Budget Minor"
+          },
+          "min_shelf_life_days": {
+            "type": "integer",
+            "maximum": 3650.0,
+            "minimum": 0.0,
+            "title": "Min Shelf Life Days",
+            "default": 0
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "City"
+          },
+          "preferred_area": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preferred Area"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "title",
+          "original_description",
+          "category",
+          "required_quantity",
+          "unit",
+          "max_total_budget_minor",
+          "city"
+        ],
+        "title": "RequirementCreate"
+      },
+      "RequirementExtraction": {
+        "properties": {
+          "evidence": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Evidence"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "biscuits",
+                  "bread",
+                  "cakes",
+                  "pastries",
+                  "rusks",
+                  "buns"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "required_quantity": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Required Quantity"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "pack",
+                  "carton",
+                  "tray",
+                  "piece"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "min_shelf_life_days": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 3650.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Shelf Life Days"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "preferred_area": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preferred Area"
+          },
+          "max_total_budget_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Total Budget Minor",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "max_total_budget_minor"
+        ],
+        "title": "RequirementExtraction"
+      },
+      "RequirementParseResponse": {
+        "properties": {
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "simulated": {
+            "type": "boolean",
+            "title": "Simulated"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "live",
+              "mock"
+            ],
+            "title": "Mode"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RequirementExtraction"
+          },
+          "missing_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Missing Fields"
+          },
+          "needs_review": {
+            "type": "boolean",
+            "const": true,
+            "title": "Needs Review",
+            "default": true
+          },
+          "persisted": {
+            "type": "boolean",
+            "const": false,
+            "title": "Persisted",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "provider",
+          "model",
+          "simulated",
+          "mode",
+          "data",
+          "missing_fields"
+        ],
+        "title": "RequirementParseResponse"
+      },
+      "RequirementPatch": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "original_description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Original Description"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "biscuits",
+                  "bread",
+                  "cakes",
+                  "pastries",
+                  "rusks",
+                  "buns"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "required_quantity": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Required Quantity"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "pack",
+                  "carton",
+                  "tray",
+                  "piece"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "max_total_budget_minor": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Total Budget Minor"
+          },
+          "min_shelf_life_days": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 3650.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Shelf Life Days"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "preferred_area": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preferred Area"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "RequirementPatch"
+      },
+      "RequirementPublic": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "buyer_org_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Buyer Org Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "required_quantity": {
+            "type": "integer",
+            "title": "Required Quantity"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "max_total_budget_minor": {
+            "type": "integer",
+            "title": "Max Total Budget Minor"
+          },
+          "min_shelf_life_days": {
+            "type": "integer",
+            "title": "Min Shelf Life Days"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "preferred_area": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Preferred Area"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "buyer_org_id",
+          "title",
+          "category",
+          "required_quantity",
+          "unit",
+          "max_total_budget_minor",
+          "min_shelf_life_days",
+          "city",
+          "preferred_area",
+          "status",
+          "created_at"
+        ],
+        "title": "RequirementPublic"
+      },
+      "Respond": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "ACCEPT",
+              "REJECT"
+            ],
+            "title": "Action"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "title": "Respond"
+      },
+      "RespondResponse": {
+        "properties": {
+          "offer": {
+            "$ref": "#/components/schemas/OfferResponse"
+          },
+          "deal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DealResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "offer",
+          "deal"
+        ],
+        "title": "RespondResponse"
+      },
+      "SellerMetrics": {
+        "properties": {
+          "active_inventory_lots": {
+            "type": "integer",
+            "title": "Active Inventory Lots"
+          },
+          "available_units": {
+            "type": "integer",
+            "title": "Available Units"
+          },
+          "reserved_units": {
+            "type": "integer",
+            "title": "Reserved Units"
+          },
+          "incoming_offers": {
+            "type": "integer",
+            "title": "Incoming Offers"
+          },
+          "accepted_deals": {
+            "type": "integer",
+            "title": "Accepted Deals"
+          },
+          "completed_wholesale_value_minor": {
+            "type": "integer",
+            "title": "Completed Wholesale Value Minor"
+          },
+          "seller_fees_minor": {
+            "type": "integer",
+            "title": "Seller Fees Minor"
+          },
+          "net_simulated_proceeds_minor": {
+            "type": "integer",
+            "title": "Net Simulated Proceeds Minor"
+          }
+        },
+        "type": "object",
+        "required": [
+          "active_inventory_lots",
+          "available_units",
+          "reserved_units",
+          "incoming_offers",
+          "accepted_deals",
+          "completed_wholesale_value_minor",
+          "seller_fees_minor",
+          "net_simulated_proceeds_minor"
+        ],
+        "title": "SellerMetrics"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

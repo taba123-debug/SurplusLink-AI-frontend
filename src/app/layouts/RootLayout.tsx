@@ -64,13 +64,13 @@ function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/marketplace?category=COOKIES" className="hover:text-[#176B4D] transition-colors">
-                  Packaged Cookies
+                <Link to="/marketplace?category=CAKES" className="hover:text-[#176B4D] transition-colors">
+                  Packaged Cakes
                 </Link>
               </li>
               <li>
-                <Link to="/marketplace?category=CRACKERS" className="hover:text-[#176B4D] transition-colors">
-                  Savory Crackers
+                <Link to="/marketplace?category=PASTRIES" className="hover:text-[#176B4D] transition-colors">
+                  Sealed Pastries
                 </Link>
               </li>
             </ul>

@@ -1,0 +1,3 @@
+Generated with the built-in image_gen tool.
+
+Use case: product-mockup. Asset type: marketplace product card photo, landscape 16:10. Primary request: photorealistic golden crispy spicy masala herb crackers in a shallow cream ceramic bowl, small square baked crackers with tiny puncture holes, red spice and green herb flecks. Scene: warm neutral tabletop, soft natural window light, close food photography, appetizing crisp texture, centered subject with room for cropping. No text, no logos, no watermark. Save generated image locally for integration into the project.

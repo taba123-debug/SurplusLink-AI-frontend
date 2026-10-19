@@ -1,3 +1,4 @@
+import { ApiError } from '@/components/shared/ApiError';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
@@ -26,7 +27,7 @@ export function BuyerOffersPage() {
   const queryClient = useQueryClient();
   const [filterTab, setFilterTab] = useState<'ALL' | 'PENDING' | 'COUNTERED' | 'ACCEPTED'>('ALL');
 
-  const { data: offers, isLoading } = useQuery({
+  const { data: offers, isLoading, error, refetch } = useQuery({
     queryKey: ['offers', 'buyer'],
     queryFn: () => api.getOffers('buyer'),
   });
@@ -58,6 +59,8 @@ export function BuyerOffersPage() {
     return true;
   });
 
+  if (error) return <ApiError error={error} retry={refetch} />;
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -71,7 +74,7 @@ export function BuyerOffersPage() {
             My Submitted Offers
           </h1>
           <p className="text-sm text-[#64736B] mt-1">
-            Track wholesale proposals, review supplier counter-offers, and proceed to checkout when agreements are finalized.
+            Track wholesale proposals, review supplier responses, and proceed to checkout when agreements are finalized.
           </p>
         </div>
 
@@ -87,7 +90,7 @@ export function BuyerOffersPage() {
         {[
           { label: 'All Offers', value: 'ALL' },
           { label: 'Awaiting Seller Response', value: 'PENDING' },
-          { label: 'Countered by Seller', value: 'COUNTERED' },
+          ...(import.meta.env.VITE_DATA_PROVIDER === 'mock' ? [{ label: 'Countered by Seller', value: 'COUNTERED' }] : []),
           { label: 'Accepted & Deals', value: 'ACCEPTED' },
         ].map((tab) => (
           <button

@@ -47,7 +47,7 @@ export function LandingPage() {
               Turn Surplus Stock Into Your Next Wholesale Opportunity.
             </h1>
             <p className="text-lg sm:text-xl text-[#64736B] max-w-2xl mx-auto leading-relaxed font-normal">
-              An AI-powered B2B marketplace connecting surplus bakery inventory with retailers ready to buy. Sealed biscuits, rusks, cookies, and crackers traded at negotiated wholesale prices.
+              An AI-powered B2B marketplace connecting surplus bakery inventory with retailers ready to buy. Sealed biscuits, rusks, cakes, pastries and bread traded at negotiated wholesale prices.
             </p>
           </div>
 
@@ -76,7 +76,7 @@ export function LandingPage() {
                   <div className="w-3 h-3 rounded-full bg-amber-400" />
                   <div className="w-3 h-3 rounded-full bg-emerald-400" />
                   <span className="text-xs font-mono text-[#64736B] ml-2">
-                    surpluslink.ai/marketplace/preview
+                    Illustrative marketplace preview — sample products
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-xs">
@@ -145,15 +145,15 @@ export function LandingPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-[#E3EAE5] bg-white p-8 shadow-xs grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div className="space-y-1">
-            <div className="text-3xl font-extrabold text-[#176B4D]">12+</div>
+            <div className="text-3xl font-extrabold text-[#176B4D]">{lots?.length ?? '—'}</div>
             <div className="text-xs font-semibold text-[#17251F]">Active Surplus Batches</div>
             <div className="text-[10px] text-[#64736B]">Seeded demo inventory lots</div>
           </div>
 
           <div className="space-y-1">
-            <div className="text-3xl font-extrabold text-[#176B4D]">Rs. 1.2M+</div>
+            <div className="text-3xl font-extrabold text-[#176B4D]">Demo only</div>
             <div className="text-xs font-semibold text-[#17251F]">Simulated Wholesale Volume</div>
-            <div className="text-[10px] text-[#64736B]">Demonstration trade ledger</div>
+            <div className="text-[10px] text-[#64736B]">No real funds transferred</div>
           </div>
 
           <div className="space-y-1">
@@ -210,7 +210,7 @@ export function LandingPage() {
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 rounded-full bg-[#EAF5EF] text-[#176B4D] flex items-center justify-center font-bold shrink-0 mt-0.5">3</span>
                 <div>
-                  <strong>Review incoming retailer offers.</strong> Accept offers or counter with revised unit prices and batch volumes.
+                  <strong>Review incoming retailer offers.</strong> Accept or reject proposed prices and quantities.
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -262,7 +262,7 @@ export function LandingPage() {
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 rounded-full bg-[#EAF5EF] text-[#176B4D] flex items-center justify-center font-bold shrink-0 mt-0.5">4</span>
                 <div>
-                  <strong>Simulated checkout & dispatch release.</strong> Receive secure release OTP and warehouse collection coordinates.
+                  <strong>Simulated checkout & dispatch release.</strong> View backend-authorized pickup information after simulated payment.
                 </div>
               </li>
             </ol>
@@ -331,7 +331,7 @@ export function LandingPage() {
             </div>
             <h3 className="text-lg font-bold text-[#17251F]">Verified Warehouse Handover</h3>
             <p className="text-xs text-[#64736B] leading-relaxed">
-              Authorized release codes (OTPs) and direct warehouse dock contacts unlock only after simulated escrow payment confirmation, ensuring clean logistics coordination.
+              Pickup information returned by the backend unlocks after successful simulated payment.
             </p>
           </div>
         </div>

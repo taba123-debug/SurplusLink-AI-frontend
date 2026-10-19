@@ -1,3 +1,4 @@
+import { ApiError } from '@/components/shared/ApiError';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
@@ -29,7 +30,7 @@ export function SellerOffersPage() {
 
   const [counterModalOffer, setCounterModalOffer] = useState<Offer | null>(null);
 
-  const { data: offers, isLoading } = useQuery({
+  const { data: offers, isLoading, error, refetch } = useQuery({
     queryKey: ['offers', 'seller'],
     queryFn: () => api.getOffers('seller'),
   });
@@ -40,7 +41,7 @@ export function SellerOffersPage() {
       api.respondToOffer(offerId, { action: 'ACCEPT' }),
     onSuccess: (updatedOffer) => {
       queryClient.invalidateQueries({ queryKey: ['offers'] });
-      queryClient.invalidateQueries({ queryKey: ['lots'] });
+      queryClient.invalidateQueries();
       queryClient.invalidateQueries({ queryKey: ['deals'] });
       toast.success('Offer accepted! Deal agreement generated.', {
         description: 'Stock has been reserved. Awaiting buyer simulated payment.',
@@ -67,6 +68,8 @@ export function SellerOffersPage() {
     },
   });
 
+  if (error) return <ApiError error={error} retry={refetch} />;
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -80,7 +83,7 @@ export function SellerOffersPage() {
             Incoming Buyer Offers
           </h1>
           <p className="text-sm text-[#64736B] mt-1">
-            Review wholesale purchase proposals from verified retailers. Accept to lock deal agreements and reserve inventory, or counter with revised terms.
+            Review wholesale purchase proposals from verified retailers. Accept to lock deal agreements and reserve inventory, or reject the proposal.
           </p>
         </div>
 
@@ -168,6 +171,7 @@ export function SellerOffersPage() {
                     <Button
                       variant="primary"
                       size="sm"
+                      disabled={acceptMutation.isPending || rejectMutation.isPending}
                       onClick={() => acceptMutation.mutate(offer.id)}
                       isLoading={acceptMutation.isPending}
                       className="font-bold"
@@ -179,6 +183,8 @@ export function SellerOffersPage() {
                     <Button
                       variant="accent"
                       size="sm"
+                      disabled={acceptMutation.isPending || rejectMutation.isPending}
+                      hidden={import.meta.env.VITE_DATA_PROVIDER !== 'mock'}
                       onClick={() => setCounterModalOffer(offer)}
                     >
                       <ArrowRightLeft className="w-3.5 h-3.5 mr-1" />

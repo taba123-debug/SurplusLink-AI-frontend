@@ -38,6 +38,16 @@ function loadDatabase(): MockDatabase {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed.lots && parsed.requirements && parsed.offers && parsed.deals) {
+        // Replace the retired demo photo in previously saved listings as well.
+        for (const lot of parsed.lots as Lot[]) {
+          if (lot.id === 'lot-009') {
+            lot.images = lot.images.map((image) =>
+              image.includes('photo-1621996346565-e3d5d62810d2')
+                ? '/images/masala-herb-crackers.png'
+                : image,
+            );
+          }
+        }
         return parsed;
       }
     }
@@ -748,7 +758,7 @@ export class MockMarketplaceApi implements MarketplaceApi {
     // Admin
     const completedDeals = db.deals.filter((d) => d.status === 'COMPLETED');
     const totalVolume = completedDeals.reduce((sum, d) => sum + d.subtotalMinor, 0);
-    const totalRevenue = completedDeals.reduce((sum, d) => sum + d.platformGrossRevenueMinor, 0);
+    const totalRevenue = completedDeals.reduce((sum, d) => sum + (d.platformGrossRevenueMinor ?? 0), 0);
 
     return {
       role: 'admin',

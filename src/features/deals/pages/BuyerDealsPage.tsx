@@ -1,3 +1,4 @@
+import { ApiError } from '@/components/shared/ApiError';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/services/api';
 import { formatPKR } from '@/lib/money';
@@ -20,10 +21,12 @@ import {
 export function BuyerDealsPage() {
   const navigate = useNavigate();
 
-  const { data: deals, isLoading } = useQuery({
+  const { data: deals, isLoading, error, refetch } = useQuery({
     queryKey: ['deals', 'buyer'],
     queryFn: () => api.getDeals('buyer'),
   });
+
+  if (error) return <ApiError error={error} retry={refetch} />;
 
   return (
     <div className="space-y-8">

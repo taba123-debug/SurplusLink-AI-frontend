@@ -1,0 +1,16 @@
+{
+  "verifiedAt": "2026-10-19T00:38:37.436Z",
+  "lotId": "9aad1619-d390-4315-82ba-53fb6feb493f",
+  "requirementId": "85020013-78b8-4fec-95a4-74a539a9a851",
+  "offerId": "81a40207-f2ed-4e36-be8a-3b5f28a2dfcc",
+  "dealId": "8f61da5b-58b9-4208-b9f7-afe5ab45ab07",
+  "buyerTotal": 1836000,
+  "sellerNet": 1764000,
+  "availableQuantity": 50,
+  "sellerLiveAI": false,
+  "buyerLiveAI": false,
+  "aiErrors": [
+    "Seller AI: Hosted AI access, model or quota is unavailable. You can enter structured data manually.",
+    "Buyer AI: Hosted AI access, model or quota is unavailable. You can enter structured data manually."
+  ]
+}

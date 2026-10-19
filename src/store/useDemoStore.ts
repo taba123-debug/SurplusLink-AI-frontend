@@ -105,6 +105,8 @@ export const SEED_ORGANIZATIONS: Organization[] = [
 ];
 
 interface DemoState {
+  organizations: Organization[];
+  setOrganizations: (organizations: Organization[]) => void;
   currentOrg: Organization;
   currentRole: UserRole;
   simulateLatency: boolean;
@@ -115,13 +117,18 @@ interface DemoState {
 
 export const useDemoStore = create<DemoState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
+      organizations: SEED_ORGANIZATIONS,
+      setOrganizations: (organizations) => set((state) => {
+        const currentOrg = organizations.find(o => o.id === state.currentOrg.id) || organizations.find(o => o.name.includes('Johar Town')) || organizations[0];
+        return { organizations, currentOrg, currentRole: currentOrg.role };
+      }),
       currentOrg: SEED_ORGANIZATIONS[3], // Default to Buyer: City Mart Superstores
       currentRole: 'buyer',
       simulateLatency: true,
 
       setCurrentOrg: (orgId: string) => {
-        const found = SEED_ORGANIZATIONS.find((o) => o.id === orgId);
+        const found = get().organizations.find((o) => o.id === orgId);
         if (found) {
           set({ currentOrg: found, currentRole: found.role });
         }
@@ -129,7 +136,7 @@ export const useDemoStore = create<DemoState>()(
 
       setCurrentRole: (role: UserRole) => {
         // Pick the first org matching this role
-        const defaultOrg = SEED_ORGANIZATIONS.find((o) => o.role === role) || SEED_ORGANIZATIONS[0];
+        const defaultOrg = get().organizations.find((o) => o.role === role) || get().organizations[0];
         set({ currentRole: role, currentOrg: defaultOrg });
       },
 

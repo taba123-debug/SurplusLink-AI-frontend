@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useDemoStore, SEED_ORGANIZATIONS } from '@/store/useDemoStore';
+import { useDemoStore } from '@/store/useDemoStore';
 import { UserCheck, ChevronDown, Check, Building2, Store, Shield } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useNavigate } from 'react-router-dom';
 
 export function RoleSwitcher() {
-  const { currentOrg, currentRole, setCurrentOrg } = useDemoStore();
+  const { currentOrg, currentRole, setCurrentOrg, organizations } = useDemoStore();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -69,7 +69,7 @@ export function RoleSwitcher() {
                 Buyer Businesses (Retailers & Wholesalers)
               </div>
               <div className="space-y-1.5">
-                {SEED_ORGANIZATIONS.filter((o) => o.role === 'buyer').map((org) => {
+                {organizations.filter((o) => o.role === 'buyer').map((org) => {
                   const isSelected = org.id === currentOrg.id;
                   return (
                     <button
@@ -108,7 +108,7 @@ export function RoleSwitcher() {
                 Seller Suppliers (Bakery & Food Producers)
               </div>
               <div className="space-y-1.5">
-                {SEED_ORGANIZATIONS.filter((o) => o.role === 'seller').map((org) => {
+                {organizations.filter((o) => o.role === 'seller').map((org) => {
                   const isSelected = org.id === currentOrg.id;
                   return (
                     <button
@@ -141,12 +141,12 @@ export function RoleSwitcher() {
             </div>
 
             {/* Admin */}
-            <div>
+            <div hidden={!organizations.some(o => o.role === 'admin')}>
               <div className="flex items-center gap-1.5 text-xs font-bold text-[#64736B] uppercase mb-2">
                 <Shield className="w-3.5 h-3.5 text-purple-700" />
                 Marketplace Operator
               </div>
-              {SEED_ORGANIZATIONS.filter((o) => o.role === 'admin').map((org) => {
+              {organizations.filter((o) => o.role === 'admin').map((org) => {
                 const isSelected = org.id === currentOrg.id;
                 return (
                   <button

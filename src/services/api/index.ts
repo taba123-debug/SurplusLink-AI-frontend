@@ -2,9 +2,9 @@ import { MockMarketplaceApi } from '../mock/mockMarketplaceApi';
 import { HttpMarketplaceApi } from '../http/httpMarketplaceApi';
 import type { MarketplaceApi } from './marketplaceApi';
 
-const provider = import.meta.env.VITE_DATA_PROVIDER || 'mock';
+const provider = import.meta.env.VITE_DATA_PROVIDER || 'http';
 
 export const api: MarketplaceApi =
-  provider === 'http' ? new HttpMarketplaceApi() : new MockMarketplaceApi();
+  provider === 'mock' ? new MockMarketplaceApi() : new HttpMarketplaceApi();
 
 export * from './marketplaceApi';

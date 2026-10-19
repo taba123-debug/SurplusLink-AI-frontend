@@ -1,3 +1,4 @@
+import { ApiError } from '@/components/shared/ApiError';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/services/api';
 import { formatPKR } from '@/lib/money';
@@ -22,7 +23,7 @@ export function BuyerDashboardPage() {
   const navigate = useNavigate();
   const { currentOrg } = useDemoStore();
 
-  const { data: summary, isLoading } = useQuery({
+  const { data: summary, isLoading, error, refetch } = useQuery({
     queryKey: ['dashboard', 'buyer'],
     queryFn: () => api.getDashboard('buyer'),
   });
@@ -31,6 +32,8 @@ export function BuyerDashboardPage() {
     queryKey: ['lots'],
     queryFn: () => api.getLots(),
   });
+
+  if (error) return <ApiError error={error} retry={refetch} />;
 
   if (isLoading || !summary) {
     return (

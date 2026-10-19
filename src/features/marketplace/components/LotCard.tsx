@@ -6,13 +6,15 @@ import { MapPin, Calendar, Boxes, ShieldCheck, Sparkles, ArrowRight } from 'luci
 import type { Lot } from '@/types';
 
 interface LotCardProps {
+  requirementId?: string;
+  requiredQuantity?: number;
   lot: Lot;
   matchScore?: number;
   matchReasons?: string[];
   budgetCompatibility?: 'UNDER_BUDGET' | 'WITHIN_BUDGET' | 'OVER_BUDGET';
 }
 
-export function LotCard({ lot, matchScore, matchReasons, budgetCompatibility }: LotCardProps) {
+export function LotCard({ lot, matchScore, matchReasons, budgetCompatibility, requirementId, requiredQuantity }: LotCardProps) {
   const daysLeft = getDaysRemaining(lot.expiryDate);
   const urgency = getShelfLifeUrgency(daysLeft);
 
@@ -134,7 +136,7 @@ export function LotCard({ lot, matchScore, matchReasons, budgetCompatibility }: 
           </div>
 
           <Link
-            to={`/marketplace/${lot.id}`}
+              to={`/marketplace/${lot.id}${requirementId ? `?requirementId=${encodeURIComponent(requirementId)}&quantity=${requiredQuantity || ''}` : ''}`}
             className="inline-flex items-center gap-1 text-xs font-bold text-[#176B4D] bg-[#EAF5EF] hover:bg-[#176B4D] hover:text-white px-3.5 py-2 rounded-xl transition-all"
           >
             <span>View Lot</span>

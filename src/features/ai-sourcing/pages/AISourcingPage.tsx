@@ -29,8 +29,8 @@ const PROMPT_CHIPS = [
   'I need 150 sealed biscuit packs under Rs. 20,000 in Lahore, with at least 30 days of shelf life remaining.',
   '100 biscuit packs under Rs. 15,000 in Gulberg',
   'Wholesale rusks with 30+ days shelf life in Township',
-  'Packaged cookies available near Johar Town under Rs. 30,000',
-  '300 savory crackers for bulk redistribution',
+  'Sealed cakes available near Johar Town under Rs. 30,000',
+  '300 sealed pastries for bulk redistribution',
 ];
 
 export function AISourcingPage() {
@@ -43,6 +43,7 @@ export function AISourcingPage() {
   const [extractedData, setExtractedData] = useState<RequirementExtraction | null>(null);
 
   // Editable confirmation form state
+  const [unit, setUnit] = useState('pack');
   const [category, setCategory] = useState<ProductCategory>('BISCUITS');
   const [quantity, setQuantity] = useState<number>(150);
   const [budgetPkr, setBudgetPkr] = useState<number>(20000);
@@ -60,6 +61,7 @@ export function AISourcingPage() {
     mutationFn: (text: string) => api.parseBuyerRequirement(text),
     onSuccess: (data) => {
       setExtractedData(data);
+      setUnit(data.unit || '');
       setCategory(data.category);
       setQuantity(data.required_quantity);
       setBudgetPkr(fromMinorUnits(data.max_total_budget_minor));
@@ -79,10 +81,13 @@ export function AISourcingPage() {
   // Save Requirement & Run Matching Mutation
   const saveAndMatchMutation = useMutation({
     mutationFn: async () => {
+      if (!category || !unit || quantity <= 0 || budgetPkr <= 0 || shelfLifeDays < 0 || !city.trim()) throw new Error('Review category, unit, quantity, budget, shelf life and city before saving.');
       // 1. Create requirement in store
       const reqTitle = `${quantity} ${category.toLowerCase()} requirement in ${city}`;
       const saved = await api.createRequirement({
         title: reqTitle,
+        originalDescription: promptText,
+        unit,
         category,
         requiredQuantity: quantity,
         maxTotalBudgetMinor: toMinorUnits(budgetPkr),
@@ -178,10 +183,10 @@ export function AISourcingPage() {
       {step === 'input' && (
         <div className="rounded-2xl border border-[#E3EAE5] bg-white p-6 sm:p-8 shadow-sm space-y-6">
           <div className="space-y-2">
-            <label className="block text-sm font-bold text-[#17251F]">
+            <label className="block text-sm font-bold text-[#17251F]" htmlFor="field-AISourcingPage-1">
               Describe your procurement request
             </label>
-            <Textarea
+              <Textarea id="field-AISourcingPage-1"
               rows={4}
               value={promptText}
               onChange={(e) => setPromptText(e.target.value)}
@@ -209,6 +214,8 @@ export function AISourcingPage() {
             </div>
           </div>
 
+          <Button variant="outline" onClick={() => { setExtractedData({ category: 'BISCUITS', required_quantity: 150, max_total_budget_minor: 2000000, min_remaining_shelf_life_days: 30, city: 'Lahore', preferred_area: null, needs_review: true, missing_fields: ['Manual entry — no AI inference'] }); setUnit('pack'); setStep('review'); }}>Enter requirement manually</Button>
+          {extractMutation.isError && <p role="alert" className="text-sm text-red-700">{extractMutation.error.message}</p>}
           {/* Action */}
           <div className="pt-2 flex justify-end">
             <Button
@@ -231,7 +238,7 @@ export function AISourcingPage() {
             <div>
               <div className="flex items-center gap-2 text-xs font-bold uppercase text-[#176B4D]">
                 <Bot className="w-4 h-4" />
-                AI Extraction Review
+                {extractedData.missing_fields.includes('Manual entry — no AI inference') ? 'Manual Requirement Review' : 'Live AI Extraction Review'}
               </div>
               <h2 className="text-xl font-bold text-[#17251F] mt-1">
                 Confirm Structured Requirements
@@ -252,7 +259,7 @@ export function AISourcingPage() {
             <div className="p-3.5 rounded-xl bg-[#FEF8EC] border border-[#E8A84B]/30 flex items-start gap-2 text-xs text-[#B27318]">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <div>
-                <strong>Notice:</strong> Some details could not be inferred with complete confidence. Please verify the quantities and budget below.
+                <strong>Notice:</strong> Some details could not be inferred with complete confidence. Please verify all fields below. Missing fields: {extractedData.missing_fields.join(', ') || 'none'}.
               </div>
             </div>
           )}
@@ -261,28 +268,29 @@ export function AISourcingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {/* Category */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-AISourcingPage-2">
                 Product Category
               </label>
-              <select
+              <select id="field-AISourcingPage-2"
                 value={category}
                 onChange={(e) => setCategory(e.target.value as ProductCategory)}
                 className="w-full h-10 rounded-xl border border-[#E3EAE5] bg-white px-3 text-sm text-[#17251F] focus:outline-none focus:ring-2 focus:ring-[#176B4D]"
               >
-                <option value="BISCUITS">Biscuits</option>
+                <option value="">Select category</option><option value="BISCUITS">Biscuits</option>
                 <option value="RUSKS">Rusks & Toast</option>
-                <option value="COOKIES">Cookies</option>
-                <option value="CRACKERS">Crackers</option>
+                <option value="CAKES">Cakes</option>
+                <option value="PASTRIES">Pastries</option><option value="BUNS">Buns</option>
                 <option value="PACKAGED_BREAD">Packaged Bread</option>
               </select>
             </div>
 
+            <div><label htmlFor="requirement-unit" className="block text-xs font-bold mb-2">Unit</label><select id="requirement-unit" value={unit} onChange={e => setUnit(e.target.value)} className="w-full h-10 border rounded-xl px-3"><option value="">Select unit</option><option value="pack">Pack</option><option value="carton">Carton</option><option value="tray">Tray</option><option value="piece">Piece</option></select></div>
             {/* Quantity */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-AISourcingPage-3">
                 Requested Quantity (Units)
               </label>
-              <Input
+              <Input id="field-AISourcingPage-3"
                 type="number"
                 min="1"
                 value={quantity}
@@ -292,10 +300,10 @@ export function AISourcingPage() {
 
             {/* Total Budget */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-AISourcingPage-4">
                 Maximum Total Budget (PKR)
               </label>
-              <Input
+              <Input id="field-AISourcingPage-4"
                 type="number"
                 min="1000"
                 step="500"
@@ -306,10 +314,10 @@ export function AISourcingPage() {
 
             {/* Minimum Shelf Life */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-AISourcingPage-5">
                 Minimum Shelf-Life (Days)
               </label>
-              <Input
+              <Input id="field-AISourcingPage-5"
                 type="number"
                 min="5"
                 value={shelfLifeDays}
@@ -319,10 +327,10 @@ export function AISourcingPage() {
 
             {/* City */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-AISourcingPage-6">
                 City / Province
               </label>
-              <Input
+              <Input id="field-AISourcingPage-6"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
               />
@@ -330,10 +338,10 @@ export function AISourcingPage() {
 
             {/* Preferred Area */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-AISourcingPage-7">
                 Preferred Area / District
               </label>
-              <Input
+              <Input id="field-AISourcingPage-7"
                 value={preferredArea}
                 placeholder="e.g. Johar Town, Gulberg, Township"
                 onChange={(e) => setPreferredArea(e.target.value)}
@@ -407,7 +415,7 @@ export function AISourcingPage() {
           {matches.length === 0 ? (
             <EmptyState
               title="No Exact Matches Found"
-              description="No existing surplus batches currently meet all your exact criteria. Your requirement has been saved and will alert you as soon as compatible stock is uploaded."
+              description="No compatible batches currently meet these criteria. Your requirement is saved; check matches again after new stock is published."
               actionLabel="Adjust Criteria"
               onAction={() => setStep('review')}
               secondaryActionLabel="Explore All Lots"
@@ -418,6 +426,8 @@ export function AISourcingPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {matches.map(({ lot, compatibilityScore, matchReasons, budgetCompatibility }) => (
                   <LotCard
+                    requirementId={savedReqId || undefined}
+                    requiredQuantity={quantity}
                     key={lot.id}
                     lot={lot}
                     matchScore={compatibilityScore}

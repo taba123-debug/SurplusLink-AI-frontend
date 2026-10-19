@@ -67,7 +67,7 @@ export function HowItWorksPage() {
             <div className="p-3.5 rounded-xl bg-[#F8FAF8] border border-[#E3EAE5] space-y-1">
               <strong className="text-[#17251F] block">3. Direct Commercial Negotiation</strong>
               <p className="text-[#64736B]">
-                Review incoming buyer proposals. Accept to lock deal agreements and automatically reserve inventory, or counter with adjusted unit prices.
+                Review incoming buyer proposals. Accept to lock deal agreements and automatically reserve inventory, or reject the proposal.
               </p>
             </div>
 
@@ -123,7 +123,7 @@ export function HowItWorksPage() {
             <div className="p-3.5 rounded-xl bg-[#F8FAF8] border border-[#E3EAE5] space-y-1">
               <strong className="text-[#17251F] block">4. Simulated Checkout & Warehouse Pass</strong>
               <p className="text-[#64736B]">
-                Upon seller acceptance, confirm simulated payment to unlock direct warehouse dispatch contact, specific loading gate, and release OTP.
+                Upon seller acceptance, confirm simulated payment to unlock the pickup address and deadline authorized by the backend.
               </p>
             </div>
           </div>

@@ -1,8 +1,9 @@
 export type UserRole = 'buyer' | 'seller' | 'admin';
 
-export type ProductCategory = 'BISCUITS' | 'RUSKS' | 'COOKIES' | 'CRACKERS' | 'PACKAGED_BREAD';
+export type ProductCategory = 'BISCUITS' | 'RUSKS' | 'COOKIES' | 'CRACKERS' | 'PACKAGED_BREAD' | 'CAKES' | 'PASTRIES' | 'BUNS';
 
 export type LotStatus =
+  | 'DRAFT'
   | 'ACTIVE'
   | 'PENDING_OFFER'
   | 'PARTIALLY_SOLD'
@@ -10,9 +11,10 @@ export type LotStatus =
   | 'PAUSED'
   | 'CLOSED';
 
-export type UnitType = 'packs' | 'boxes' | 'cartons' | 'cases';
+export type UnitType = 'packs' | 'boxes' | 'cartons' | 'cases' | 'trays' | 'pieces';
 
 export interface Organization {
+  userId?: string;
   id: string;
   name: string;
   role: UserRole;
@@ -37,6 +39,7 @@ export interface Lot {
   description: string;
   totalQuantity: number;
   availableQuantity: number;
+  soldQuantity?: number;
   reservedQuantity: number;
   unitType: UnitType;
   askingUnitPriceMinor: number | null; // null if "Submit Offer"
@@ -89,6 +92,8 @@ export interface BuyerRequirement {
 }
 
 export interface RequirementExtraction {
+  unit?: string;
+  originalDescription?: string;
   category: ProductCategory;
   required_quantity: number;
   max_total_budget_minor: number;
@@ -157,8 +162,8 @@ export interface Offer {
   requestedQuantity: number;
   offeredUnitPriceMinor: number;
   offerSubtotalMinor: number;
-  buyerServiceFeeMinor: number;
-  checkoutTotalMinor: number;
+  buyerServiceFeeMinor?: number;
+  checkoutTotalMinor?: number;
   pickupPreference?: string;
   expiresAt: string;
   status: OfferStatus;
@@ -211,7 +216,7 @@ export interface Deal {
   buyerTotalMinor: number;
   sellerCommissionMinor: number;
   sellerNetProceedsMinor: number;
-  platformGrossRevenueMinor: number;
+  platformGrossRevenueMinor?: number;
   paymentStatus: PaymentStatus;
   pickupStatus: PickupStatus;
   status: DealStatus;
@@ -233,6 +238,8 @@ export interface CheckoutSession {
 export interface DashboardSummary {
   role: 'buyer' | 'seller' | 'admin';
   metrics: {
+    sellerNetMinor?: number;
+    platformRevenueMinor?: number;
     activeLots?: number;
     unitsListed?: number;
     pendingOffers: number;
@@ -253,6 +260,7 @@ export interface DashboardSummary {
 }
 
 export interface CreateLotInput {
+  pickupAddress?: string;
   title: string;
   category: ProductCategory;
   description: string;
@@ -274,6 +282,8 @@ export interface CreateLotInput {
 }
 
 export interface CreateRequirementInput {
+  originalDescription?: string;
+  unit?: string;
   title: string;
   category: ProductCategory;
   requiredQuantity: number;
@@ -285,6 +295,7 @@ export interface CreateRequirementInput {
 }
 
 export interface CreateOfferInput {
+  requirementId?: string;
   lotId: string;
   requestedQuantity: number;
   offeredUnitPriceMinor: number;

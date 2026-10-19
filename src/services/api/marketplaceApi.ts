@@ -18,6 +18,7 @@ import type {
 } from '@/types';
 
 export interface MarketplaceApi {
+  getOwnLots?(): Promise<Lot[]>;
   // Lots
   getLots(filters?: LotFilters): Promise<Lot[]>;
   getLot(id: string): Promise<Lot>;

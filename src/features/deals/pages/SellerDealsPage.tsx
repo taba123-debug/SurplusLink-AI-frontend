@@ -1,3 +1,4 @@
+import { ApiError } from '@/components/shared/ApiError';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/services/api';
 import { formatPKR } from '@/lib/money';
@@ -16,10 +17,12 @@ import {
 } from 'lucide-react';
 
 export function SellerDealsPage() {
-  const { data: deals, isLoading } = useQuery({
+  const { data: deals, isLoading, error, refetch } = useQuery({
     queryKey: ['deals', 'seller'],
     queryFn: () => api.getDeals('seller'),
   });
+
+  if (error) return <ApiError error={error} retry={refetch} />;
 
   return (
     <div className="space-y-8">

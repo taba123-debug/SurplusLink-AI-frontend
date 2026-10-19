@@ -185,7 +185,7 @@ export function AdminOverviewPage() {
 
               <div className="flex items-center gap-3 shrink-0">
                 <span className="font-bold text-[#176B4D]">
-                  Platform Fee: {formatPKR(deal.platformGrossRevenueMinor)}
+                  Platform Fee: {deal.platformGrossRevenueMinor === undefined ? 'Not provided' : formatPKR(deal.platformGrossRevenueMinor)}
                 </span>
                 <StatusBadge status={deal.status} />
               </div>

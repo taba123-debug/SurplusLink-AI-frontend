@@ -15,8 +15,9 @@ const CATEGORIES: { label: string; value: ProductCategory | 'ALL' }[] = [
   { label: 'All Bakery Surplus', value: 'ALL' },
   { label: 'Biscuits', value: 'BISCUITS' },
   { label: 'Rusks & Toast', value: 'RUSKS' },
-  { label: 'Cookies', value: 'COOKIES' },
-  { label: 'Crackers', value: 'CRACKERS' },
+  { label: 'Cakes', value: 'CAKES' },
+  { label: 'Buns', value: 'BUNS' },
+  { label: 'Pastries', value: 'PASTRIES' },
   { label: 'Packaged Bread', value: 'PACKAGED_BREAD' },
 ];
 
@@ -34,10 +35,10 @@ export function LotFiltersComponent({
     <div className={`space-y-6 ${className}`}>
       {/* Search Header for mobile/desktop filter */}
       <div>
-        <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-2">
+        <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-2" htmlFor="field-LotFilters-1">
           Search Lots
         </label>
-        <Input
+              <Input id="field-LotFilters-1"
           placeholder="Filter by product, batch, area..."
           value={filters.search || ''}
           onChange={(e) => update({ search: e.target.value })}
@@ -47,7 +48,7 @@ export function LotFiltersComponent({
 
       {/* Category Selection */}
       <div>
-        <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-2.5">
+        <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-2.5" htmlFor="field-LotFilters-2">
           Product Category
         </label>
         <div className="flex flex-col space-y-1">
@@ -75,7 +76,7 @@ export function LotFiltersComponent({
         <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-2">
           Location / City
         </label>
-        <select
+              <select id="field-LotFilters-2"
           value={filters.city || ''}
           onChange={(e) => update({ city: e.target.value || undefined })}
           className="w-full h-10 rounded-xl border border-[#E3EAE5] bg-white px-3 text-xs text-[#17251F] focus:outline-none focus:ring-2 focus:ring-[#176B4D]"
@@ -89,7 +90,7 @@ export function LotFiltersComponent({
 
       {/* Minimum Available Quantity */}
       <div>
-        <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-2">
+        <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-2" htmlFor="field-LotFilters-3">
           Minimum Batch Quantity
         </label>
         <div className="flex items-center gap-2">
@@ -111,7 +112,7 @@ export function LotFiltersComponent({
         <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-2">
           Remaining Shelf Life
         </label>
-        <select
+              <select id="field-LotFilters-3"
           value={filters.minShelfLifeDays || ''}
           onChange={(e) =>
             update({

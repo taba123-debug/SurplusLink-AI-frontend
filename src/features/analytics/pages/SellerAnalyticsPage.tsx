@@ -1,3 +1,4 @@
+import { ApiError } from '@/components/shared/ApiError';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/services/api';
 import { formatPKR, fromMinorUnits } from '@/lib/money';
@@ -24,10 +25,12 @@ import {
 } from 'recharts';
 
 export function SellerAnalyticsPage() {
-  const { data: summary, isLoading } = useQuery({
+  const { data: summary, isLoading, error, refetch } = useQuery({
     queryKey: ['dashboard', 'seller'],
     queryFn: () => api.getDashboard('seller'),
   });
+
+  if (error) return <ApiError error={error} retry={refetch} />;
 
   if (isLoading || !summary) {
     return (
@@ -52,13 +55,11 @@ export function SellerAnalyticsPage() {
     commissionPKR: fromMinorUnits(d.commissionMinor),
   }));
 
-  const netProceedsMinor = Math.max(
-    0,
-    metrics.completedDealValueMinor - metrics.platformFeesMinor
-  );
+  const netProceedsMinor = metrics.sellerNetMinor;
 
   return (
     <div className="space-y-8">
+      {metrics.platformRevenueMinor !== undefined && <div className="p-4 rounded-xl border bg-white"><strong>Platform simulated fees, all completed demo trades: {formatPKR(metrics.platformRevenueMinor)}</strong><p className="text-xs">Authorized backend metric. No real funds transferred.</p></div>}
       {/* Header */}
       <div className="pb-6 border-b border-[#E3EAE5]">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#176B4D] mb-1">
@@ -100,7 +101,7 @@ export function SellerAnalyticsPage() {
             Net Supplier Proceeds
           </div>
           <div className="text-2xl font-extrabold text-[#176B4D]">
-            {formatPKR(netProceedsMinor)}
+            {netProceedsMinor === undefined ? 'Not provided' : formatPKR(netProceedsMinor)}
           </div>
           <p className="text-[11px] text-[#64736B] mt-1">Gross volume minus fee</p>
         </div>
@@ -112,14 +113,15 @@ export function SellerAnalyticsPage() {
           <div className="text-2xl font-extrabold text-[#17251F]">
             {metrics.unitsListed && metrics.unitsListed > 0
               ? `${Math.round((metrics.acceptedDeals / (metrics.activeLots || 1)) * 100)}%`
-              : '85%'}
+              : '—'}
           </div>
           <p className="text-[11px] text-[#64736B] mt-1">Listings converted to deals</p>
         </div>
       </div>
 
       {/* Visual Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {chartData.length === 0 && <p className="text-sm text-[#64736B]">Historical chart data is not provided by this backend. Summary metrics above are current.</p>}
+      <div hidden={chartData.length === 0} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Deal Volume Bar Chart */}
         <div className="rounded-2xl border border-[#E3EAE5] bg-white p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between">

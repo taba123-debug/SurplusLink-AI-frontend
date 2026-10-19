@@ -148,6 +148,12 @@ export function TopNavbar() {
               How It Works & Economics
             </Link>
             <div className="pt-2 border-t border-[#E3EAE5]">
+              {(currentRole === 'seller' ? [
+                ['Surplus Inventory', '/seller/inventory'], ['List New Surplus', '/seller/inventory/new'],
+                ['Incoming Offers', '/seller/offers'], ['Deals & Pickup', '/seller/deals'], ['Analytics', '/seller/analytics'],
+              ] : currentRole === 'buyer' ? [
+                ['Saved Requirements', '/buyer/requirements'], ['Submitted Offers', '/buyer/offers'], ['Deals & Pickup', '/buyer/deals'],
+              ] : []).map(([label,path]) => <Link key={path} to={path} onClick={() => setMobileMenuOpen(false)} className="block p-2 text-sm font-medium">{label}</Link>)}
               <Link
                 to={currentRole === 'buyer' ? '/buyer/dashboard' : currentRole === 'seller' ? '/seller/dashboard' : '/admin/overview'}
                 onClick={() => setMobileMenuOpen(false)}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
-import { toMinorUnits, fromMinorUnits, formatPKR, calculateDealFinancials } from '@/lib/money';
+import { toMinorUnits, fromMinorUnits, formatPKR } from '@/lib/money';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,7 @@ import { useDemoStore } from '@/store/useDemoStore';
 import { useNavigate } from 'react-router-dom';
 
 interface OfferDialogProps {
+  requirementId?: string;
   lot: Lot;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -24,6 +25,7 @@ export function OfferDialog({
   open,
   onOpenChange,
   defaultQuantity,
+  requirementId,
 }: OfferDialogProps) {
   const { currentRole, currentOrg } = useDemoStore();
   const queryClient = useQueryClient();
@@ -43,12 +45,13 @@ export function OfferDialog({
 
   // Derived financials
   const subtotalMinor = toMinorUnits((quantity || 0) * (unitPricePkr || 0));
-  const financials = calculateDealFinancials(subtotalMinor);
+
 
   const mutation = useMutation({
     mutationFn: () =>
       api.createOffer({
         lotId: lot.id,
+        requirementId,
         requestedQuantity: quantity,
         offeredUnitPriceMinor: toMinorUnits(unitPricePkr),
         pickupPreference,
@@ -56,7 +59,7 @@ export function OfferDialog({
       }),
     onSuccess: (newOffer) => {
       queryClient.invalidateQueries({ queryKey: ['offers'] });
-      queryClient.invalidateQueries({ queryKey: ['lots'] });
+      queryClient.invalidateQueries();
       queryClient.invalidateQueries({ queryKey: ['lot', lot.id] });
       toast.success('Wholesale offer submitted successfully!', {
         description: `Reference: ${newOffer.offerReference}. Awaiting supplier review.`,
@@ -75,6 +78,8 @@ export function OfferDialog({
     e.preventDefault();
     setErrorMsg(null);
 
+    if (currentRole !== 'buyer' || lot.sellerId === currentOrg.id) { setErrorMsg('Select a buyer identity before submitting an offer.'); return; }
+    if (Date.parse(lot.expiryDate) <= Date.now() || Date.parse(lot.pickupDeadline) <= Date.now()) { setErrorMsg('This inventory has expired or its pickup deadline has passed.'); return; }
     if (quantity <= 0) {
       setErrorMsg('Quantity must be greater than zero.');
       return;
@@ -122,10 +127,10 @@ export function OfferDialog({
           {/* Quantity & Unit Price inputs */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-OfferDialog-1">
                 Quantity Requested ({lot.unitType})
               </label>
-              <Input
+              <Input id="field-OfferDialog-1"
                 type="number"
                 min={lot.minPurchaseQuantity}
                 max={lot.availableQuantity}
@@ -140,10 +145,10 @@ export function OfferDialog({
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-OfferDialog-2">
                 Proposed Unit Price (PKR)
               </label>
-              <Input
+              <Input id="field-OfferDialog-2"
                 type="number"
                 min="1"
                 step="1"
@@ -161,13 +166,13 @@ export function OfferDialog({
             </div>
           </div>
 
-          {/* Expiration & Pickup preference */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Backend supports expiry, but not pickup preferences. */}
+          <div hidden={import.meta.env.VITE_DATA_PROVIDER !== 'mock'} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-OfferDialog-3">
                 Offer Expiration
               </label>
-              <select
+              <select id="field-OfferDialog-3"
                 value={expiresInDays}
                 onChange={(e) => setExpiresInDays(parseInt(e.target.value, 10))}
                 className="w-full h-10 rounded-xl border border-[#E3EAE5] bg-white px-3 text-xs text-[#17251F] focus:outline-none focus:ring-2 focus:ring-[#176B4D]"
@@ -179,11 +184,11 @@ export function OfferDialog({
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5">
+            <div hidden={import.meta.env.VITE_DATA_PROVIDER !== 'mock'}>
+              <label className="block text-xs font-bold uppercase tracking-wider text-[#17251F] mb-1.5" htmlFor="field-OfferDialog-4">
                 Pickup Method
               </label>
-              <Input
+              <Input id="field-OfferDialog-4"
                 value={pickupPreference}
                 onChange={(e) => setPickupPreference(e.target.value)}
                 placeholder="Self-pickup / Delivery preference"
@@ -192,6 +197,7 @@ export function OfferDialog({
           </div>
 
           {/* Financial Breakdown Preview */}
+          {import.meta.env.VITE_DATA_PROVIDER !== 'mock' && <p className="text-xs text-[#64736B]">The backend sets offer expiry to within 24 hours or the pickup deadline, whichever comes first.</p>}
           <FeeBreakdown subtotalMinor={subtotalMinor} viewerRole="buyer" />
 
           {errorMsg && (
@@ -218,9 +224,10 @@ export function OfferDialog({
             <Button
               type="submit"
               variant="primary"
+              disabled={currentRole !== 'buyer'}
               isLoading={mutation.isPending}
             >
-              Submit Wholesale Offer ({formatPKR(financials.buyerTotalMinor)})
+              Submit Wholesale Offer
             </Button>
           </DialogFooter>
         </form>

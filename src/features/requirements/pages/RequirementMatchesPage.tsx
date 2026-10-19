@@ -1,3 +1,4 @@
+import { ApiError } from '@/components/shared/ApiError';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/services/api';
@@ -17,13 +18,15 @@ export function RequirementMatchesPage() {
     enabled: !!id,
   });
 
-  const { data: matches, isLoading: matchesLoading } = useQuery({
+  const { data: matches, isLoading: matchesLoading, error, refetch } = useQuery({
     queryKey: ['requirement-matches', id],
     queryFn: () => api.getRequirementMatches(id!),
     enabled: !!id,
   });
 
   const isLoading = reqLoading || matchesLoading;
+
+  if (error) return <ApiError error={error} retry={refetch} />;
 
   if (isLoading) {
     return (
@@ -119,12 +122,14 @@ export function RequirementMatchesPage() {
             title="No Compatible Batches Found Yet"
             description="There are currently no active lots that meet this requirement. When manufacturers upload compatible inventory, it will automatically appear here."
             actionLabel="Browse Marketplace"
-            onAction={() => {}}
+            onAction={() => { window.location.href = '/marketplace'; }}
           />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {matches.map(({ lot, compatibilityScore, matchReasons, budgetCompatibility }) => (
               <LotCard
+                requirementId={requirement.id}
+                requiredQuantity={requirement.requiredQuantity}
                 key={lot.id}
                 lot={lot}
                 matchScore={compatibilityScore}
