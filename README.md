@@ -1,5 +1,16 @@
 # SurplusLink AI frontend
 
+## Architecture
+
+The frontend is organized by business feature. Pages compose feature hooks and
+components; feature hooks own React Query behavior; infrastructure owns HTTP
+transport and response mapping; shared components contain reusable UI. Read
+[ARCHITECTURE.md](ARCHITECTURE.md) before adding a new page or feature.
+
+The real-world buyer, seller and admin walkthrough is documented in
+[docs/B2B-WORKFLOW.md](docs/B2B-WORKFLOW.md). Use that flow as the product
+source of truth before the next visual design pass.
+
 React, Vite, TypeScript and Tailwind frontend for the local FastAPI/PostgreSQL B2B surplus marketplace. Existing UI is connected to the backend at `http://localhost:8000/api/v1`.
 
 ```powershell

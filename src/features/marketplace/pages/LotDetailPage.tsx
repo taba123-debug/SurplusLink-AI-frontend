@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/services/api';
+import { useMarketplaceLot } from '../hooks/useMarketplaceLots';
 import { formatPKR } from '@/lib/money';
 import { formatDate, getDaysRemaining, getShelfLifeUrgency } from '@/lib/dates';
 import { StatusBadge } from '@/components/ui/statusBadge';
@@ -31,11 +32,7 @@ export function LotDetailPage() {
   const [now] = useState(() => Date.now());
   const [offerDialogOpen, setOfferDialogOpen] = useState(false);
 
-  const { data: lot, isLoading, isError } = useQuery({
-    queryKey: ['lot', lotId],
-    queryFn: () => api.getLot(lotId!),
-    enabled: !!lotId,
-  });
+  const { data: lot, isLoading, isError } = useMarketplaceLot(lotId);
 
   const { data: allLots } = useQuery({
     queryKey: ['lots'],

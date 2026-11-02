@@ -122,6 +122,13 @@ export class MockMarketplaceApi implements MarketplaceApi {
     if (filters.minQuantity !== undefined && filters.minQuantity > 0) {
       result = result.filter((l) => l.availableQuantity >= filters.minQuantity!);
     }
+    if (filters.minShelfLifeDays !== undefined && filters.minShelfLifeDays > 0) {
+      result = result.filter((l) => new Date(l.expiryDate).getTime() - Date.now() >= filters.minShelfLifeDays! * 86400000);
+    }
+    if (filters.packagingType) {
+      const packaging = filters.packagingType.toLowerCase();
+      result = result.filter((l) => `${l.packagingType} ${l.storageRequirements}`.toLowerCase().includes(packaging));
+    }
     if (filters.verifiedOnly) {
       result = result.filter((l) => l.sellerVerified);
     }

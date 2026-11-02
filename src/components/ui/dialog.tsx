@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -14,29 +15,31 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
       if (e.key === 'Escape') onOpenChange(false);
     };
     if (open) {
+      const previousOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        document.body.style.overflow = previousOverflow;
+        window.removeEventListener('keydown', handleKeyDown);
+      };
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-      window.removeEventListener('keydown', handleKeyDown);
-    };
   }, [open, onOpenChange]);
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-      {/* Backdrop */}
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       <div
         className="fixed inset-0 bg-[#17251F]/40 backdrop-blur-xs transition-opacity animate-in fade-in"
         onClick={() => onOpenChange(false)}
+        aria-hidden="true"
       />
-      {/* Container */}
       <div className="relative z-50 w-full max-w-lg my-auto">{children}</div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

@@ -1,31 +1,22 @@
-import { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/services/api';
+import { useState } from 'react';
 import type { LotFilters } from '@/types';
 import { LotCard } from '../components/LotCard';
 import { LotFiltersComponent } from '../components/LotFilters';
+import { useMarketplaceLots } from '../hooks/useMarketplaceLots';
+import { useMarketplaceFilters } from '../hooks/useMarketplaceFilters';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/emptyState';
 import { Button } from '@/components/ui/button';
 import { Sparkles, SlidersHorizontal, ArrowUpDown, Package, X } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export function MarketplacePage() {
-  const [searchParams] = useSearchParams();
-  const [filters, setFilters] = useState<LotFilters>({
-    category: (searchParams.get('category') || 'ALL') as LotFilters['category'],
-    sortBy: 'newest',
-  });
+  const { filters, updateFilters, resetFilters, activeFilterCount } = useMarketplaceFilters();
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  const { data: lots, isLoading, isError, refetch } = useQuery({
-    queryKey: ['lots', filters],
-    queryFn: () => api.getLots(filters),
-  });
+  const { data: lots, isLoading, isError, refetch } = useMarketplaceLots(filters);
 
-  const handleResetFilters = () => {
-    setFilters({ category: 'ALL', sortBy: 'newest' });
-  };
+  const setFilters = updateFilters;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -72,7 +63,7 @@ export function MarketplacePage() {
           </span>
           <span className="hidden sm:inline text-[#E3EAE5]">•</span>
           <span className="hidden sm:inline text-xs text-[#64736B]">
-            All prices in Pakistani Rupees (PKR)
+            Buyer-ready inventory • PKR per unit
           </span>
         </div>
 
@@ -119,13 +110,14 @@ export function MarketplacePage() {
           <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#E3EAE5]">
             <span className="text-sm font-bold text-[#17251F] flex items-center gap-1.5">
               <SlidersHorizontal className="w-4 h-4 text-[#176B4D]" />
-              Filter Catalog
+              Filter Catalog {activeFilterCount > 0 && `(${activeFilterCount})`}
             </span>
           </div>
           <LotFiltersComponent
             filters={filters}
             onFilterChange={setFilters}
-            onReset={handleResetFilters}
+            onReset={resetFilters}
+            activeFilterCount={activeFilterCount}
           />
         </div>
 
@@ -158,7 +150,7 @@ export function MarketplacePage() {
               title="No Wholesale Lots Match Your Filters"
               description="Try broadening your search keywords, price constraints, or minimum quantity filters."
               actionLabel="Reset Filters"
-              onAction={handleResetFilters}
+              onAction={resetFilters}
             />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -191,7 +183,8 @@ export function MarketplacePage() {
               <LotFiltersComponent
                 filters={filters}
                 onFilterChange={setFilters}
-                onReset={handleResetFilters}
+                onReset={resetFilters}
+                activeFilterCount={activeFilterCount}
               />
             </div>
 

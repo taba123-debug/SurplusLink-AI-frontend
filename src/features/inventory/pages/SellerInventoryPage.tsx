@@ -1,7 +1,4 @@
 import { ApiError } from '@/components/shared/ApiError';
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/services/api';
 import { formatPKR } from '@/lib/money';
 import { formatDate, getDaysRemaining } from '@/lib/dates';
 import { StatusBadge } from '@/components/ui/statusBadge';
@@ -9,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/emptyState';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 import {
   Boxes,
   PackagePlus,
@@ -19,34 +15,18 @@ import {
   XCircle,
   Eye,
   Calendar,
-  AlertTriangle,
 } from 'lucide-react';
-import type { Lot, LotStatus } from '@/types';
 import { useDemoStore } from '@/store/useDemoStore';
+import { useSellerInventory, useUpdateLotStatus } from '../hooks/useInventory';
 
 export function SellerInventoryPage() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { currentOrg } = useDemoStore();
-
-  const { data: lots, isLoading, error, refetch } = useQuery({
-    queryKey: ['lots', 'seller-all'],
-    queryFn: () => api.getOwnLots ? api.getOwnLots() : api.getLots(),
-  });
+  const { data: lots, isLoading, error, refetch } = useSellerInventory();
 
   const sellerLots = (lots || []).filter((l) => l.sellerId === currentOrg.id);
 
-  const statusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: LotStatus }) =>
-      api.updateLotStatus(id, status),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries();
-      toast.success(`Lot status updated to ${variables.status}`);
-    },
-    onError: (err: Error) => {
-      toast.error('Failed to update lot status', { description: err.message });
-    },
-  });
+  const statusMutation = useUpdateLotStatus();
 
   if (error) return <ApiError error={error} retry={refetch} />;
 

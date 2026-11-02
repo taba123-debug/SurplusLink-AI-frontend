@@ -22,7 +22,8 @@ export function Providers({ children }: ProvidersProps) {
     }).catch(e => { if (active) setError(e.message); });
     return () => { active = false; };
   }, []);
-  if (!ready) return <main className="p-8 text-center" role="status">{error ? <><p role="alert">{error}</p><button className="underline mt-4" onClick={() => window.location.reload()}>Retry connection</button></> : 'Connecting to demo marketplace…'}</main>;
+  if (!ready) return <main className="p-8 text-center" role="status">
+    {error ? <><p role="alert">{error}</p><button className="underline mt-4" onClick={() => window.location.reload()}>Retry connection</button></> : 'Connecting to demo marketplace…'}</main>;
   return <SessionProvider key={orgId}>{children}</SessionProvider>;
 }
 
